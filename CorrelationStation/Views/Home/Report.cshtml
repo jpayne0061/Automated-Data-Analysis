@@ -1,0 +1,196 @@
+﻿@model CorrelationStation.Models.StatSummaryVM
+
+
+<div class="container">
+    <div class="row">
+        @*@using (Html.BeginForm("SaveSummary", "Home"))
+            {
+
+                @Html.HiddenFor(m => m.AnovaStats)
+                @Html.HiddenFor(m => m.ApplicationUserId)
+                @Html.HiddenFor(m => m.ChiStats)
+                @Html.HiddenFor(m => m.FileName)
+                @Html.HiddenFor(m => m.Path)
+                @Html.HiddenFor(m => m.PearsonCorrs)
+
+                <button type="submit">Save To My Reports </button>
+            }*@
+
+        <h1>@Model.Name</h1>
+
+        @if (ViewBag.Saved == "false")
+        {
+            <span class="btn btn-primary js-save-report" js-report-id="@Model.Id">Save To My Reports</span>
+            <div id="js-saved-message" class="bold"></div>
+        }
+
+
+
+
+
+
+        @{int backgroundCount = 0; }
+        @{ string color = "";}
+        @foreach (var chiStat in Model.ChiStats)
+        {
+            if (backgroundCount % 2 == 0)
+            {
+                color = "white";
+            }
+            else
+            {
+                color = "gray";
+            }
+
+            if (chiStat.HighDF == false)
+            {
+                <div class="contain-stat @color">
+
+
+
+                    <div>
+                        <h2 class="inline">@chiStat.Variable1 and </h2> <h2 class="inline"> @chiStat.Variable2</h2>
+                        @if (chiStat.SignificantResult)
+                        {
+                            @*<span class="asterisk">*</span>*@
+                            <span class="glyphicon glyphicon-exclamation-sign"></span>
+                        }
+                    </div>
+
+
+                    <div class="show-graphs js-show-graphs">Chi-squared Test</div>
+                    <div class="graph-div no-show">
+                        <h3>p-value &#8776; @chiStat.PValue </h3><h3> Chi Statistic: @chiStat.ChiStatistic</h3>
+
+
+                        <div class="show-graphs get-chi-tables" js-id="@chiStat.Id">Get Expected/Observed Tables</div>
+                        <div class="show-graphs js-show-graphs hide-show-link">Hide/Show Tables</div>
+                        <div class="graph-div"></div>
+
+
+                        <div class="show-graphs get-chi-percentages" js-id="@chiStat.Id">Get Expected/Observed Percentages</div>
+                        <div class="show-graphs js-show-graphs hide-show-link">Hide/Show Percentages</div>
+                        <div class="graph-div"></div>
+
+
+
+                    </div>
+
+
+                </div> @*EndContext contain stats*@
+            }
+            else
+            {
+                <div class="low-opacity">
+
+                    <h2 class="inline">@chiStat.Variable1 and </h2> <h2 class="inline">@chiStat.Variable2</h2>
+                    <p>Excluded due to number Degrees of Freedom > 5,000</p>
+                </div>
+            }
+            backgroundCount += 1;
+
+
+
+
+            @*</div>*@
+
+        }
+
+        @foreach (var anovaStat in Model.AnovaStats)
+        {
+            if (backgroundCount % 2 == 0)
+            {
+                color = "white";
+            }
+            else
+            {
+                color = "gray";
+            }
+
+            <div class="contain-stat @color">
+
+
+
+                <div>
+                    <h2 class="inline">@anovaStat.CategoricalVariable and </h2> <h2 class="inline">@anovaStat.NumericalVariable</h2>
+                    @if (anovaStat.SignificantResult)
+                    {
+                        @*<span class="asterisk">*</span>*@
+                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    }
+
+
+                    <div class="js-show-graphs show-graphs">Anova Test</div>
+                    <div class="no-show graph-div">
+                        <h3>F = @anovaStat.FStat </h3><h3> Critical F Value for alpha 0.05: @anovaStat.CriticalValueAtAlphaZeroFive</h3>
+                        <h3>
+                            @if (anovaStat.SigAtPointZeroFive)
+                            {
+                                <span>*Result is significant*</span>
+                            }
+                            else
+                            {
+                                <span>Result is NOT significant</span>
+                            }
+                        </h3>
+
+                    </div>
+
+                    <div class="show-graphs get-anova-means get-anova-bar" js-id="@anovaStat.Id">Get Bar Chart of Means</div>
+                    <div class="show-graphs js-show-graphs hide-show-link">Hide/Show Chart</div>
+                    <div class="graph-div"></div>
+
+                    @*paste here*@
+
+
+                </div>
+            </div>
+            backgroundCount += 1;
+        }
+
+        @foreach (var pearsonCorr in Model.PearsonCorrs)
+        {
+            if (backgroundCount % 2 == 0)
+            {
+                color = "white";
+            }
+            else
+            {
+                color = "gray";
+            }
+
+            <div class="contain-stat @color">
+
+                <h2 class="inline">@pearsonCorr.Variable1 and </h2> <h2 class="inline">@pearsonCorr.Variable2</h2>
+                @if (pearsonCorr.SignificantResult)
+                {
+                    @*<span class="asterisk">*</span>*@
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                }
+                <div class="show-graphs js-show-graphs">Pearson Correlation Coefficient</div>
+                <div class="graph-div no-show">
+                    <h2>r: <span>@pearsonCorr.r</span></h2>
+                    <div class="show-graphs hide-show-scatter">hide/show scatter plot</div>
+                    <div class="show-graphs js-scatterplot" js-stat-id="@pearsonCorr.Id" js-data-1="@pearsonCorr.Variable1" js-data-2="@pearsonCorr.Variable2" js-data-path="@Model.Path" js-switch="false">get scatter plot</div>
+
+                    <span class="bold js-before-axis">x axis: </span><span class="x-axis-var js-before-axis">@pearsonCorr.Variable1 </span><br>
+                    <span class="bold js-before-axis"> y axis:</span><span class="y-axis-var js-before-axis">@pearsonCorr.Variable2</span>
+                    <br>
+
+                    <span class="switch-axes btn btn-success js-before-axis">switch axes</span>
+                    <span class="switch-axes-after btn btn-success no-show">switch axes</span>
+                    @*<div class="js-scatter-div" id="a@(pearsonCorr.r)"></div>*@
+                    <div class="js-scatter-div graph-div" id="@(pearsonCorr.Variable1 + pearsonCorr.Variable2)"></div>
+
+
+                </div>
+            </div>
+            backgroundCount += 1;
+
+        }
+
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.0/d3.js"></script>

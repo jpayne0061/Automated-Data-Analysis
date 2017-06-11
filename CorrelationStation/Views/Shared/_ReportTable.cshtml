@@ -1,0 +1,30 @@
+﻿
+<table class="margin-top-20px">
+    <tr>
+        <th>Report Name</th>
+        <th>Link To Report</th>
+        <th>Created On</th>
+        <th>Author</th>
+        <th>Description</th>
+    </tr>
+    @foreach (var statSummary in Model)
+    {
+        <tr>
+            <td>@statSummary.Name</td>
+            <td><a href="/Home/GetReport/@statSummary.Id">@statSummary.FileName</a></td>
+            <td>@statSummary.CreatedOn</td>
+
+            @if (statSummary.Author == null)
+            {
+                <td>Anonymous</td>
+            }
+            else
+            {
+                <td>@statSummary.Author</td>
+            }
+
+            <td>@statSummary.Description</td>
+        </tr>
+    }
+
+</table>

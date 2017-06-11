@@ -1,0 +1,58 @@
+﻿@model CorrelationStation.Models.SelectTypeVM
+
+<h2>Prepare Report</h2>
+
+
+
+@using (Html.BeginForm("ProcessCSV", "Home"))
+{
+
+    @Html.HiddenFor(m => m.Path)
+    @Html.HiddenFor(m => m.FileName)
+
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+
+
+    foreach (var kvp in Model.ColumnTypes)
+    {
+        @Html.Label(kvp.Key);
+        //@Html.TextBoxFor(m => m.ColumnTypes[kvp.Key]);
+        //@Html.DropDownListFor(m => m.AssignedTo, new SelectList(Model.Users, "Id", "Name"), "", new { @class = "form-control" })
+        @Html.DropDownListFor(m => m.ColumnTypes[kvp.Key], Model.Types, "exclude", new { @class = "form-control" });
+    }
+
+    @Html.LabelFor(m => m.Description)
+    @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+
+    
+    @*@Html.RadioButtonFor(m => m.Public, "true", new { id = "true", @class = "form-control" })
+    @Html.Label("true", "Public Report")
+
+    @Html.RadioButtonFor(m => m.Public, "false", new { id = "false", @class = "form-control" })
+    @Html.Label("false", "Private Report")*@
+
+    <button class="btn btn-success" type="submit">Get Report</button>
+}
+
+<table class="margin-top-20px">
+    <tr>
+        @for (var i = 0; i < Model.FirstFiveRows[0].Count; i++)
+        {
+            <th>@Model.FirstFiveRows[0][i]</th>
+        }
+    </tr>
+    
+    @for (var i = 1; i < Model.FirstFiveRows.Count; i++)
+    {
+        <tr>
+            @foreach(var dataPoint in Model.FirstFiveRows[i])
+            {
+                <td>@dataPoint</td>
+            }
+
+        </tr>
+
+    }
+
+</table>

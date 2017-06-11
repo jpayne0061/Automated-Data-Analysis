@@ -1,0 +1,11 @@
+﻿@model List<CorrelationStation.Models.StatSummaryVM>
+
+
+<h2>Summaries</h2>
+
+@foreach (var ss in Model)
+{
+    <div>
+        <a href="/Home/GetReport/@ss.Id">@ss.FileName</a>
+    </div>
+}

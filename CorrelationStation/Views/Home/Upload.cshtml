@@ -1,0 +1,41 @@
+﻿@model CorrelationStation.Models.UploadVM
+
+
+
+<h1>Upload a CSV File</h1>
+
+<p class="js-show-next pointer">How does this work?</p>
+<p class="no-show how-does-it-work">
+    CSV Analyzer is a tool that helps you find associations and correlations between variables/columns in your csv file.
+    <br />
+    <br />
+    After you upload a csv file, you will be prompted to identify each column as either categorical or numeral(currently, these are the only variable types the app supports).
+    You also have the option of giving your report a name and description.
+    <br/>
+    <br />
+    After you prepare your report, CSV Analyzer will run statistical tests on each of the columns/variables
+    that you have selected. Depending on the variable types, CSV Analyzer will run either an Anova test, Chi-squared test or Pearson Correlation Coefficient. These tests are accompanied
+    with data visualizations.
+</p>
+
+@using (Html.BeginForm("SelectTypes", "Home", FormMethod.Post,
+                                                                            new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <fieldset>
+
+        <label for="File" class="custom-file-upload">
+            <span class="glyphicon glyphicon-upload"></span> choose file
+        </label>
+        <span id="file-selected"></span>
+        <div class="input-for-file">
+            @Html.TextBoxFor(m => m.File, new { @class = "", type = "file" })
+
+        </div>
+        <div>
+            <input type="submit" value="Upload" class="btn btn-primary" />
+        </div>
+    </fieldset>
+}
+<p class="size-limit">*10MB limit</p>

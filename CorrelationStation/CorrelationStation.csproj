@@ -44,20 +44,41 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.2.16.3.0\lib\net45\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Meta.Numerics, Version=3.1.0.0, Culture=neutral, PublicKeyToken=67d25c65a6631347, processorArchitecture=MSIL">
+      <HintPath>..\packages\Meta.Numerics.3.1.0\lib\Meta.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -167,25 +188,99 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="api\DataPointsController.cs" />
+    <Compile Include="Controllers\CsvReader.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705071342018_InitialCreate.cs" />
+    <Compile Include="Migrations\201705071342018_InitialCreate.Designer.cs">
+      <DependentUpon>201705071342018_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705262332249_statModelsAndKVPModels.cs" />
+    <Compile Include="Migrations\201705262332249_statModelsAndKVPModels.Designer.cs">
+      <DependentUpon>201705262332249_statModelsAndKVPModels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705272143132_addKeyValuePropToAnova.cs" />
+    <Compile Include="Migrations\201705272143132_addKeyValuePropToAnova.Designer.cs">
+      <DependentUpon>201705272143132_addKeyValuePropToAnova.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705281250018_highDFToChiSquared.cs" />
+    <Compile Include="Migrations\201705281250018_highDFToChiSquared.Designer.cs">
+      <DependentUpon>201705281250018_highDFToChiSquared.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705282255322_addedFileNameToSummaryandDBContextForStatSummary.cs" />
+    <Compile Include="Migrations\201705282255322_addedFileNameToSummaryandDBContextForStatSummary.Designer.cs">
+      <DependentUpon>201705282255322_addedFileNameToSummaryandDBContextForStatSummary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705291327316_VariableListToPearsonCorr.cs" />
+    <Compile Include="Migrations\201705291327316_VariableListToPearsonCorr.Designer.cs">
+      <DependentUpon>201705291327316_VariableListToPearsonCorr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705291346298_AddedClassJustToStoreAnIntBecauseEntityFrameWorkCantStorePrimitiveTypesInAList.cs" />
+    <Compile Include="Migrations\201705291346298_AddedClassJustToStoreAnIntBecauseEntityFrameWorkCantStorePrimitiveTypesInAList.Designer.cs">
+      <DependentUpon>201705291346298_AddedClassJustToStoreAnIntBecauseEntityFrameWorkCantStorePrimitiveTypesInAList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705291437063_usingStringInsteadofListOfDoubles.cs" />
+    <Compile Include="Migrations\201705291437063_usingStringInsteadofListOfDoubles.Designer.cs">
+      <DependentUpon>201705291437063_usingStringInsteadofListOfDoubles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706041946567_addedRelationhipToUserAndStatSummaries.cs" />
+    <Compile Include="Migrations\201706041946567_addedRelationhipToUserAndStatSummaries.Designer.cs">
+      <DependentUpon>201706041946567_addedRelationhipToUserAndStatSummaries.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706042347164_addedCreatedOnAndDescriptionToStatSummary.cs" />
+    <Compile Include="Migrations\201706042347164_addedCreatedOnAndDescriptionToStatSummary.Designer.cs">
+      <DependentUpon>201706042347164_addedCreatedOnAndDescriptionToStatSummary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706060135392_addedAuthorAndAppUserstoStatVM.cs" />
+    <Compile Include="Migrations\201706060135392_addedAuthorAndAppUserstoStatVM.Designer.cs">
+      <DependentUpon>201706060135392_addedAuthorAndAppUserstoStatVM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706070006113_NameToSummaryVM.cs" />
+    <Compile Include="Migrations\201706070006113_NameToSummaryVM.Designer.cs">
+      <DependentUpon>201706070006113_NameToSummaryVM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AnInt.cs" />
+    <Compile Include="Models\AnovaStats.cs" />
+    <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\ChiSquareUtils.cs" />
+    <Compile Include="Models\ChiStats.cs" />
+    <Compile Include="Models\ChiStatTable.cs" />
+    <Compile Include="Models\Column.cs" />
+    <Compile Include="Models\FTable.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KeyValue.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Methods.cs" />
+    <Compile Include="Models\PearsonCorr.cs" />
+    <Compile Include="Models\ScatterPlotRequest.cs" />
+    <Compile Include="Models\SelectTypeVM.cs" />
+    <Compile Include="Models\StatSummaryVM.cs" />
+    <Compile Include="Models\UploadVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrapFlatly.css" />
+    <Content Include="Content\bootstrapPaper.css" />
+    <Content Include="Content\bootstrapSand.css" />
+    <Content Include="Content\bootstrapYeti.css" />
+    <Content Include="Content\csv_Image_compressed.jpeg" />
+    <Content Include="Content\default_gif.gif" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\Site10.css" />
+    <Content Include="Scripts\app6.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -234,9 +329,19 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Home\Upload.cshtml" />
+    <Content Include="Views\Home\Report.cshtml" />
+    <Content Include="Views\Home\SelectTypes.cshtml" />
+    <Content Include="Views\Home\holdCuts.cshtml" />
+    <Content Include="Views\Home\StatSummaries.cshtml" />
+    <Content Include="Views\Home\AllStatSummaries.cshtml" />
+    <Content Include="Views\Home\Test.cshtml" />
+    <Content Include="Views\Shared\_ReportTable.cshtml" />
+    <Content Include="Views\Home\MyStatSummaries.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -245,6 +350,44 @@
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201705071342018_InitialCreate.resx">
+      <DependentUpon>201705071342018_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705262332249_statModelsAndKVPModels.resx">
+      <DependentUpon>201705262332249_statModelsAndKVPModels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705272143132_addKeyValuePropToAnova.resx">
+      <DependentUpon>201705272143132_addKeyValuePropToAnova.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705281250018_highDFToChiSquared.resx">
+      <DependentUpon>201705281250018_highDFToChiSquared.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705282255322_addedFileNameToSummaryandDBContextForStatSummary.resx">
+      <DependentUpon>201705282255322_addedFileNameToSummaryandDBContextForStatSummary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705291327316_VariableListToPearsonCorr.resx">
+      <DependentUpon>201705291327316_VariableListToPearsonCorr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705291346298_AddedClassJustToStoreAnIntBecauseEntityFrameWorkCantStorePrimitiveTypesInAList.resx">
+      <DependentUpon>201705291346298_AddedClassJustToStoreAnIntBecauseEntityFrameWorkCantStorePrimitiveTypesInAList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705291437063_usingStringInsteadofListOfDoubles.resx">
+      <DependentUpon>201705291437063_usingStringInsteadofListOfDoubles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706041946567_addedRelationhipToUserAndStatSummaries.resx">
+      <DependentUpon>201706041946567_addedRelationhipToUserAndStatSummaries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706042347164_addedCreatedOnAndDescriptionToStatSummary.resx">
+      <DependentUpon>201706042347164_addedCreatedOnAndDescriptionToStatSummary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706060135392_addedAuthorAndAppUserstoStatVM.resx">
+      <DependentUpon>201706060135392_addedAuthorAndAppUserstoStatVM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706070006113_NameToSummaryVM.resx">
+      <DependentUpon>201706070006113_NameToSummaryVM.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

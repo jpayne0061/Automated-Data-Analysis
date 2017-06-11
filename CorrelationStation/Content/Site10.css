@@ -1,0 +1,334 @@
+﻿body {
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+	white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+	max-width: 280px;
+}
+
+
+.observed-div {
+	height: 25px;
+	background-color: #b62516;
+}
+
+.expected-div {
+	height: 25px;
+	background-color: #3498db;
+}
+
+.blue-legend {
+	background-color: #3498db;
+	width: 100px;
+	height: 30px;
+	display: inline-block;
+	color: #fff;
+}
+
+.red-legend {
+	background-color: #b62516;
+	width: 100px;
+	height: 30px;
+	display: inline-block;
+	margin-bottom: 30px;
+	color: #fff;
+}
+
+.bold {
+	font-weight: 600;
+}
+
+.inline {
+	display: inline-block;
+}
+
+
+table, tbody, tr, th, td {
+   border: 1px solid black;
+   padding: 5px;
+}
+
+table {
+	display: inline-table;
+	margin-bottom: 25px;
+}
+
+.graph-div {
+	margin-left: 30px;
+	padding-left: 10px;
+	/*border-left: dotted;*/
+}
+
+.show-graphs {
+   text-decoration: underline;
+   color: mediumblue;
+}
+
+.show-graphs:hover {
+   cursor: pointer;
+}
+
+h2{
+	margin-bottom: 5px;
+}
+
+h3 {
+	margin-top: 0;
+}
+
+.percent-graph-pair {
+	margin-bottom: 25px;
+}
+
+.percent-graph-number {
+	vertical-align: super;
+	width: 50px;
+}
+
+.asterisk {
+	font-size: 3em;
+}
+
+.white 
+{
+	background-color: #fff;
+}
+
+.gray {
+	background-color: #f4f4f4;
+}
+
+.hide-show-scatter {
+	display: none;
+	margin-bottom: 10px;
+}
+
+.hide-show-link 
+{
+	display: none;
+}
+
+.no-show{
+	display: none;
+}
+
+#data-load {
+	/*display: none;*/
+	/*position: absolute;*/
+	float: left;
+	 
+	height: 60px;
+	background: url('default_gif.gif') no-repeat center center;
+	width: 60px;
+	margin-top: 10px;
+}
+
+.low-opacity {
+	opacity: 0.4;
+}
+
+.margin-top-20px
+{
+	margin-top: 20px;
+}
+
+.pointer:hover {
+	cursor: pointer;
+}
+
+.sig-table-value {
+	background-color: #ff9b9b;
+}
+
+input[type="file"] {
+	display: none;
+}
+
+.custom-file-upload {
+	border: 1px solid #ccc;
+	display: inline-block;
+	padding: 6px 12px;
+	cursor: pointer;
+	border-radius: 3px;
+}
+
+.custom-file-upload:hover {
+	background-color: #3e3f3a;
+	color: #fff;
+}
+
+
+label {
+	font-size: 14px;
+	font-weight: 400;
+	padding-top: 15px;
+}
+
+.btn-success {
+	margin-top: 10px;
+}
+
+.glyphicon-chevron-down {
+	vertical-align: bottom;
+}
+
+/*.x-axis-var, y-axis-var {
+	display: block;
+}
+
+.btn-success {
+
+	display: block;
+}*/
+
+.white-color {
+	color: white;
+}
+
+.how-does-it-work {
+	width: 450px;
+}
+
+.size-limit {
+	font-size: 10px;
+}
+
+fieldset div input.btn-primary {
+	margin-bottom: 15px;
+}
+
+.validation-summary-errors {
+	color: red;
+
+}
+
+.validation-summary-errors ul {
+	list-style-type: none;
+	padding: 0;
+
+}
+/************** dat viz styling *******************/
+
+select.form-control:hover 
+{
+	cursor: pointer;
+}
+
+.js-save-report{
+	margin-top: 20px;
+}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: black;
+	shape-rendering: crispEdges;
+}
+
+.axis text {
+	font-family: sans-serif;
+	font-size: 11px;
+}
+
+svg:not(:root) {
+	overflow: visible;
+}
+
+/* ********BARC CHART STYLING************* */
+
+.bar {
+  fill: steelblue;
+}
+
+
+.x.axis path {
+  display: none;
+}
+
+.bar:hover {
+	fill:  #b62516;
+}
+
+
+/***********LANDING PAGE**********************/
+
+
+#landing-body {
+	background-image: url("csv_Image_compressed.jpeg");
+	background-attachment:fixed;
+	background-size: cover;
+	padding: 0;
+	margin-bottom: 0;
+}
+
+
+#overlay {
+	z-index: 1;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	background: rgba(0,0,0, 0.8);  
+	text-align: center;
+	overflow-x:hidden;
+	overflow-y:hidden;
+  
+}
+
+.title-div {
+	padding-top: 7%;
+	color: #fff;
+}
+
+
+.margin-sides-5px {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.title-div span:hover {
+	cursor: pointer;
+}
+
+#login-form {
+	margin-top: 10px;
+	display: none;
+}
+
+/*input[type="text"]
+{
+   
+	background-color: transparent;
+	border: 1px solid #fff;
+	outline: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	
+	color: #fff;
+	cursor:default;
+
+}*/
+
+.title-div .btn-success{
+	width: 280px;
+	margin-left: 78px;
+}
