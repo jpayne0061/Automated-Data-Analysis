@@ -328,8 +328,8 @@ $(document.body).on("click", ".get-chi-tables", function () {
     })
      .done(function (data) {
          removeLoader(ref);
-         chiTableData(data, ref, 0, "Expected");
-         chiTableData(data, ref, 1, "Observed");
+         chiTableData(data, ref, 0, "Expected Frequency");
+         chiTableData(data, ref, 1, "Observed Frequency");
      }).fail(function () {
          alert("yikes, no bueno");
      });
@@ -361,7 +361,7 @@ var getBarGraph = function (data, ref) {
     var longest = 0;
     for (var i = 0; i < data.length; i++) {
         if (data[i]["Key"].length > longest) {
-            longest = data[i]["Key"].length * 12;
+            longest = data[i]["Key"].length * 20;
         };
     }
 
@@ -371,9 +371,29 @@ var getBarGraph = function (data, ref) {
     graphDiv.empty();
     graphDiv.append("<svg class='chart" + classUnique +"'></svg>");
 
-    var margin = { top: 20, right: 30, bottom: 30, left: 40 },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+
+
+    if (data.length < 5)
+    {
+        var margin = { top: 20, right: 30, bottom: 30, left: 40 },
+        width = 300 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+    }
+    else if (data.length > 4 && data.length < 10){
+        var margin = { top: 20, right: 30, bottom: 30, left: 40 },
+        width = 600 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+    }
+    else if (data.length > 9 && data.length < 20) {
+        var margin = { top: 20, right: 30, bottom: 30, left: 40 },
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+    }
+    else {
+        var margin = { top: 20, right: 30, bottom: 30, left: 40 },
+        width = data.length*35 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+    }
 
     var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], 0.1);
