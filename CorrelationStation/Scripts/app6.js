@@ -361,7 +361,7 @@ var getBarGraph = function (data, ref) {
     var longest = 0;
     for (var i = 0; i < data.length; i++) {
         if (data[i]["Key"].length > longest) {
-            longest = data[i]["Key"].length * 20;
+            longest = data[i]["Key"].length * 10;
         };
     }
 

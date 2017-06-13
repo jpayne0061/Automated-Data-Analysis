@@ -283,6 +283,9 @@
     <Content Include="Scripts\app6.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\Files\6931d493-202e-4f87-a322-6325b5c926cc" />
+    <None Include="Properties\PublishProfiles\csvAnalyzer - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\csvAnalyzer - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -341,7 +344,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

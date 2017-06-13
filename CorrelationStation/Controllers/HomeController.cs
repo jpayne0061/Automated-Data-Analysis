@@ -55,9 +55,9 @@ namespace CorrelationStation.Controllers
         [HttpPost]
         public ActionResult SelectTypes(UploadVM vm)
         {
-            try
-            {
-                if(vm.File.ContentLength > 9000000)
+            //try
+            //{
+                if(vm.File.ContentLength > 11000000)
                 {
                     ModelState.AddModelError(string.Empty, "*There is a 10MB size limit at this time");
                     TempData["ViewData"] = ViewData;
@@ -80,13 +80,13 @@ namespace CorrelationStation.Controllers
                     return RedirectToAction("Upload");
                 }
 
-            }
-            catch
-            {
+            //}
+            //catch
+            //{
 
-                ViewBag.Message = "Upload Failed";
-                return RedirectToAction("Upload");
-            }
+            //    ViewBag.Message = "Upload Failed";
+            //    return RedirectToAction("Upload");
+            //}
 
 }
 
