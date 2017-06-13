@@ -171,13 +171,13 @@
                 <div class="graph-div no-show">
                     <h2>r: <span>@pearsonCorr.r</span></h2>
                     <div class="show-graphs hide-show-scatter">hide/show scatter plot</div>
-                    <div class="show-graphs js-scatterplot" js-stat-id="@pearsonCorr.Id" js-data-1="@pearsonCorr.Variable1" js-data-2="@pearsonCorr.Variable2" js-data-path="@Model.Path" js-switch="false">get scatter plot</div>
+                    <div class="js-scatterplot btn btn-success" js-stat-id="@pearsonCorr.Id" js-data-1="@pearsonCorr.Variable1" js-data-2="@pearsonCorr.Variable2" js-data-path="@Model.Path" js-switch="false">get scatter plot</div>
 
                     <span class="bold js-before-axis">x axis: </span><span class="x-axis-var js-before-axis">@pearsonCorr.Variable1 </span><br>
                     <span class="bold js-before-axis"> y axis:</span><span class="y-axis-var js-before-axis">@pearsonCorr.Variable2</span>
                     <br>
 
-                    <span class="switch-axes btn btn-success js-before-axis">switch axes</span>
+                    <span class="switch-axes btn btn-default js-before-axis">switch axes <span class="glyphicon glyphicon-random"></span></span>
                     <span class="switch-axes-after btn btn-success no-show">switch axes</span>
                     @*<div class="js-scatter-div" id="a@(pearsonCorr.r)"></div>*@
                     <div class="js-scatter-div graph-div" id="@(pearsonCorr.Variable1 + pearsonCorr.Variable2)"></div>

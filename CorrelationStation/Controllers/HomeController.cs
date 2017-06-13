@@ -57,28 +57,34 @@ namespace CorrelationStation.Controllers
         {
             //try
             //{
-                if(vm.File.ContentLength > 11000000)
-                {
-                    ModelState.AddModelError(string.Empty, "*There is a 10MB size limit at this time");
-                    TempData["ViewData"] = ViewData;
-                    TempData["ModelState"] = ModelState;
-                    return RedirectToAction("Upload");
-                }
+            if (TempData["ViewData"] != null)
+            {
+                ViewData = (ViewDataDictionary)TempData["ViewData"];
+            }
+
+            if (vm.File.ContentLength > 11000000)
+            {
+                ModelState.AddModelError(string.Empty, "*There is a 10MB size limit at this time");
+                TempData["ViewData"] = ViewData;
+                TempData["ModelState"] = ModelState;
+                return RedirectToAction("Upload");
+            }
                     //
+           
 
-                    if (vm.File.ContentLength > 0 && ModelState.IsValid)
-                {
-                    var guid = Guid.NewGuid();
-                    var path = Path.Combine(Server.MapPath("~/Content/Files"), guid.ToString());
-                    SelectTypeVM selectTypeVM = Methods.MakeSelectType(vm, path);
-                    selectTypeVM.FileName = vm.File.FileName;
-                    return View(selectTypeVM);
+            if (vm.File.ContentLength > 0 && ModelState.IsValid)
+            {
+                var guid = Guid.NewGuid();
+                var path = Path.Combine(Server.MapPath("~/Content/Files"), guid.ToString());
+                SelectTypeVM selectTypeVM = Methods.MakeSelectType(vm, path);
+                selectTypeVM.FileName = vm.File.FileName;
+                return View(selectTypeVM);
 
-                }
-                else
-                {
-                    return RedirectToAction("Upload");
-                }
+            }
+            else
+            {
+                return RedirectToAction("Upload");
+            }
 
             //}
             //catch
@@ -93,6 +99,18 @@ namespace CorrelationStation.Controllers
         
         public ActionResult ProcessCSV(SelectTypeVM vm)
         {
+
+
+            if(vm.ColumnTypes.Values.Where(x => x != "").Count() < 2 )
+            {
+                ModelState.AddModelError(string.Empty, "*You must select at least two variables");
+                TempData["ViewData"] = ViewData;
+                TempData["ModelState"] = ModelState;
+                ViewData = (ViewDataDictionary)TempData["ViewData"];
+                Methods.MakeDropDownAndFirstFive(vm);
+                return View("SelectTypes", vm);
+            }
+
 
             Dictionary<string, List<string>> dictFile = Methods.CsvToDictionary(vm.Path);
 

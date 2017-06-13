@@ -132,7 +132,7 @@ h3 {
 #data-load {
 	/*display: none;*/
 	/*position: absolute;*/
-	float: left;
+	/*float: left;*/
 	 
 	height: 60px;
 	background: url('default_gif.gif') no-repeat center center;
@@ -224,6 +224,12 @@ fieldset div input.btn-primary {
 	padding: 0;
 
 }
+
+div.graph-div div.js-scatterplot {
+	display: block;
+    width: 140px;
+}
+
 /************** dat viz styling *******************/
 
 select.form-control:hover 

@@ -126,30 +126,14 @@ namespace CorrelationStation.Models
 
         }
 
-        public static SelectTypeVM MakeSelectType(UploadVM vm, string path)
+        public static void MakeDropDownAndFirstFive(SelectTypeVM selectTypeVM)
         {
-            var fileName = Path.GetFileName(vm.File.FileName);
-
-            vm.File.SaveAs(path);
-
-            SelectTypeVM selectTypeVM = new SelectTypeVM();
-            selectTypeVM.Path = path;
-            selectTypeVM.ColumnTypes = new Dictionary<string, string>();
-            string line1 = System.IO.File.ReadLines(path).First();
-
-            string[] values = line1.Split(',');
-
-            for (var i = 0; i < values.Length; i++)
-            {
-                selectTypeVM.ColumnTypes.Add(values[i].Replace("\"", ""), "");
-            }
-
             selectTypeVM.Types = new SelectList(new List<string> { "categorical", "numeral", "exclude" });
 
             List<List<string>> firstFive = new List<List<string>>();
 
             //***************
-            using (TextReader fileReader = System.IO.File.OpenText(path))
+            using (TextReader fileReader = System.IO.File.OpenText(selectTypeVM.Path))
             {
                 var parser = new CsvParser(fileReader);
                 firstFive.Add(parser.Read().ToList());
@@ -164,6 +148,30 @@ namespace CorrelationStation.Models
 
             //*******************
             selectTypeVM.FirstFiveRows = firstFive;
+
+        }
+
+
+        public static SelectTypeVM MakeSelectType(UploadVM vm, string path)
+        {
+            var fileName = Path.GetFileName(vm.File.FileName);
+
+            vm.File.SaveAs(path);
+
+            SelectTypeVM selectTypeVM = new SelectTypeVM();
+            selectTypeVM.Path = path;
+            selectTypeVM.ColumnTypes = new Dictionary<string, string>();
+
+            string line1 = System.IO.File.ReadLines(selectTypeVM.Path).First();
+
+            string[] values = line1.Split(',');
+
+            for (var i = 0; i < values.Length; i++)
+            {
+                selectTypeVM.ColumnTypes.Add(values[i].Replace("\"", ""), "");
+            }
+
+            MakeDropDownAndFirstFive(selectTypeVM);
 
             return selectTypeVM;
         }

@@ -1,5 +1,5 @@
 ﻿$(document.body).on("click", ".js-show-graphs", function () {
-    $(this).next(".graph-div").toggle();
+    $(this).next(".graph-div").toggle(250);
 });
 
 var globalData;
@@ -256,10 +256,10 @@ var scatterPlotService = function (ref) {
 $(document.body).on("click", ".js-scatterplot", function () {
     //console.log($(this).attr("js-data-1"));
     var ref = $(this);
-    ref.nextAll(".switch-axes-after:first").toggle();
-    ref.nextAll(".js-before-axis").toggle();
+    ref.nextAll(".switch-axes-after:first").toggle(200);
+    ref.nextAll(".js-before-axis").toggle(200);
     dataLoad(ref);
-    ref.prev().toggle();
+    ref.prev().toggle(200);
     ref.hide();
     scatterPlotService(ref);
 
@@ -267,8 +267,8 @@ $(document.body).on("click", ".js-scatterplot", function () {
 
 
 $(document.body).on("click", ".hide-show-scatter", function () {
-    $(this).nextAll(".js-scatter-div:first").toggle();
-    $(this).nextAll(".switch-axes-after").toggle();
+    $(this).nextAll(".js-scatter-div:first").toggle(200);
+    $(this).nextAll(".switch-axes-after").toggle(200);
 
 });
 
@@ -319,8 +319,8 @@ $(document.body).on("click", ".switch-axes-after", function () {
 $(document.body).on("click", ".get-chi-tables", function () {
     var ref = $(this);
     dataLoad(ref);
-    ref.next(".hide-show-link").toggle();
-    ref.toggle();
+    ref.next(".hide-show-link").toggle(200);
+    ref.toggle(200);
     var chiId = ref.attr("js-id");
     $.ajax({
         url: "/api/DataPoints/GetChiTablesData/" + chiId,
@@ -339,8 +339,8 @@ $(document.body).on("click", ".get-chi-tables", function () {
 $(document.body).on("click", ".get-chi-percentages", function () {
     var ref = $(this);
     dataLoad(ref);
-    ref.next(".hide-show-link").toggle();
-    ref.toggle();
+    ref.next(".hide-show-link").toggle(200);
+    ref.toggle(200);
     var chiId = ref.attr("js-id");
     $.ajax({
         url: "/api/DataPoints/GetChiPercentages/" + chiId,
@@ -361,7 +361,7 @@ var getBarGraph = function (data, ref) {
     var longest = 0;
     for (var i = 0; i < data.length; i++) {
         if (data[i]["Key"].length > longest) {
-            longest = data[i]["Key"].length * 10;
+            longest = data[i]["Key"].length * 20;
         };
     }
 
@@ -455,8 +455,8 @@ $(document.body).on("click", ".get-anova-bar", function () {
 
     var ref = $(this);
     dataLoad(ref);
-    ref.next(".hide-show-link").toggle();
-    ref.toggle();
+    ref.next(".hide-show-link").toggle(200);
+    ref.toggle(200);
     var chiId = ref.attr("js-id");
     $.ajax({
         url: "/api/DataPoints/GetAnovaMeans/" + chiId,

@@ -6,7 +6,7 @@
 
 @using (Html.BeginForm("ProcessCSV", "Home"))
 {
-
+    @Html.ValidationSummary(true)
     @Html.HiddenFor(m => m.Path)
     @Html.HiddenFor(m => m.FileName)
 

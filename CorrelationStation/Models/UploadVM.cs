@@ -10,6 +10,7 @@ namespace CorrelationStation.Models
     {
         [Required]
         public HttpPostedFileBase File { get; set; }
+        public bool FileSaved { get; set; }
 
     }
 }
