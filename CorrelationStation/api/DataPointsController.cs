@@ -7,6 +7,8 @@ using System.Web.Http;
 using CorrelationStation.Models;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity;
+using System.Web.Helpers;
+using System.Data.Entity;
 
 namespace CorrelationStation.Controllers
 {
@@ -110,6 +112,28 @@ namespace CorrelationStation.Controllers
             return anovaStat.Means;
         }
 
+
+        //GetDateCategoryLinePlot
+        [HttpGet]
+        public ICollection<LinePlotCategory> GetDateCategoryLinePlot(int id)
+        {
+            //var dateCat = _context.DateAndCategories.Include(d => d.TimePeriods.Select(t => t.CategoryCounts))
+            //                                    .SingleOrDefault(a => a.Id == id);
+
+            var dateCat = _context.DateAndCategories.Include(d => d.LinePlotCategories.Select(t => t.DateAndCounts))
+                                                .SingleOrDefault(a => a.Id == id);
+
+            //dateCat.TimePeriods.ToList().Sort((x, y) => DateTime.Compare(x.Date, y.Date));
+            foreach(LinePlotCategory lineCat in dateCat.LinePlotCategories)
+            {
+                //lineCat.DateAndCounts.ToList().Sort((x, y) => DateTime.Compare(x.DateTime, y.DateTime));
+                lineCat.DateAndCounts = lineCat.DateAndCounts.OrderBy(x => x.DateTime).ToList();
+            }
+            return dateCat.LinePlotCategories;
+        }
+
+
+
         [HttpGet]
         public IHttpActionResult SaveToReports(int id)
         {
@@ -128,5 +152,31 @@ namespace CorrelationStation.Controllers
 
             return Ok();
         }
+
+        //[HttpGet]
+        //public IHttpActionResult RemoveStatSummary(int id)
+        //{
+        //    StatSummaryVM ss = _context.StatSummaryVMs.Include(x => x.AnovaStats)
+        //                                              .Include(x => x.ChiStats)
+        //                                                //.Include(x => x.PearsonCorrs)
+        //                                                .SingleOrDefault(x => x.Id == id);
+
+
+        //    //foreach(var anova in ss.AnovaStats)
+        //    //{
+        //    //    _context.AnovaStats.
+        //    //}
+
+        //    //deleteMe.Prices.ToList().ForEach(p => db.ItemPrices.Remove(p));
+        //    ss.AnovaStats.ToList().ForEach(a => _context.AnovaStats.Remove(a));
+        //    ss.ChiStats.ToList().ForEach(c => _context.ChiStats.Remove(c));
+
+        //    _context.Entry(ss).State = EntityState.Deleted;
+
+        //    //_context.StatSummaryVMs.Remove(ss);
+        //    _context.SaveChanges();
+        //    return Ok();
+        //}
+
     }
 }

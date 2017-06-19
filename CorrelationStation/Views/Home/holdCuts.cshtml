@@ -1,114 +1,15 @@
 ﻿
-@{
-    ViewBag.Title = "holdCuts";
-}
 
-<h2>holdCuts</h2>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    .axis--x path {
+        display: none;
+    }
 
-
-
-<div class="graph-div">
-    <table>
-        @{List<string> keys = new List<string>();}
-        <tr>
-            <th colspan="@(chiStat.Variable2Categories.Count)">Observed</th>
-        </tr>
-        <tr>
-            @*leave cell blank for [0,0]*@
-            <th></th>
-            @foreach (KeyValuePair<string, double> kvp in chiStat.VariableCategories)
-            {
-                <th>@kvp.Key</th>
-                keys.Add(kvp.Key);
-
-            }
-
-        </tr>
-        @foreach (KeyValuePair<string, int> kvp in chiStat.Variable2Categories)
-        {
-            <tr>
-                <td class="bold">@kvp.Key</td>
-                @{var count = 0;}
-                @foreach (KeyValuePair<string, double> kvpRow in chiStat.VariableCategories)
-                {
-                    <td>@chiStat.ObservedValues[keys[count] + " " + kvp.Key]</td>
-                    count += 1;
-                }
-
-            </tr>
-                    }
-
-
-
-    </table>
-
-
-
-    <table>
-        <tr>
-            <th colspan="@(chiStat.Variable2Categories.Count)">Expected</th>
-        </tr>
-        <tr>
-            <th></th>
-            @foreach (KeyValuePair<string, double> kvp in chiStat.VariableCategories)
-            {
-                <th>@kvp.Key</th>
-            }
-
-        </tr>
-        @foreach (KeyValuePair<string, int> kvp in chiStat.Variable2Categories)
-        {
-            <tr>
-                <td class="bold">@kvp.Key</td>
-                @{var count = 0;}
-                @foreach (KeyValuePair<string, double> kvpRow in chiStat.VariableCategories)
-                {
-                    <td>@Math.Round(chiStat.ExpectedValues[keys[count] + " " + kvp.Key], 2)</td>
-                    count += 1;
-                }
-
-            </tr>
-                    }
-
-
-
-    </table>
-</div>
-
-
-
-
-@*show details*@
-
-
-<div class="graph-div">
-    <h3>F = @anovaStat.FStat </h3><h3> Critical F Value for alpha 0.05: @anovaStat.CriticalValueAtAlphaZeroFive</h3>
-    <h3>
-        @if (anovaStat.SigAtPointZeroFive)
-        {
-            <span>*Result is significant*</span>
-        }
-        else
-        {
-            <span>Result is NOT significant</span>
-        }
-    </h3>
-
-    <div class="show-graphs js-show-graphs">show means for each group/categorical variable</div>
-    <div class="graph-div">
-
-        @foreach (KeyValuePair<string, double> kvp in anovaStat.Means)
-        {
-            <div>
-                <span>@kvp.Key :</span><span>@kvp.Value</span>
-            </div>
-        }
-    </div>
-</div>
-
-var removeLoader = function (ref) {
-    var target = ref.nextAll(".graph-div:first");
-    target.empty();
-}
-
-nextSelect = $(this);
+    .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }
+</style>

@@ -6,9 +6,12 @@
 
 @using (Html.BeginForm("ProcessCSV", "Home"))
 {
+    @*@Html.Raw(Server.HtmlDecode(Html.ValidationSummary(true).ToString()))*@
+    @Html.Raw(@ViewBag.Error)
     @Html.ValidationSummary(true)
     @Html.HiddenFor(m => m.Path)
     @Html.HiddenFor(m => m.FileName)
+    @Html.HiddenFor(m => m.FirstFiveRows)
 
     @Html.LabelFor(m => m.Name)
     @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })

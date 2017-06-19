@@ -55,8 +55,7 @@ namespace CorrelationStation.Controllers
         [HttpPost]
         public ActionResult SelectTypes(UploadVM vm)
         {
-            //try
-            //{
+
             if (TempData["ViewData"] != null)
             {
                 ViewData = (ViewDataDictionary)TempData["ViewData"];
@@ -69,7 +68,7 @@ namespace CorrelationStation.Controllers
                 TempData["ModelState"] = ModelState;
                 return RedirectToAction("Upload");
             }
-                    //
+                    
            
 
             if (vm.File.ContentLength > 0 && ModelState.IsValid)
@@ -86,30 +85,39 @@ namespace CorrelationStation.Controllers
                 return RedirectToAction("Upload");
             }
 
-            //}
-            //catch
-            //{
-
-            //    ViewBag.Message = "Upload Failed";
-            //    return RedirectToAction("Upload");
-            //}
 
 }
 
         
         public ActionResult ProcessCSV(SelectTypeVM vm)
         {
+            Methods.MakeDropDownAndFirstFive(vm);
 
-
-            if(vm.ColumnTypes.Values.Where(x => x != "").Count() < 2 )
+            if (vm.ColumnTypes.Values.Where(x => x != "").Count() < 2 )
             {
                 ModelState.AddModelError(string.Empty, "*You must select at least two variables");
                 TempData["ViewData"] = ViewData;
                 TempData["ModelState"] = ModelState;
                 ViewData = (ViewDataDictionary)TempData["ViewData"];
-                Methods.MakeDropDownAndFirstFive(vm);
                 return View("SelectTypes", vm);
             }
+
+            Dictionary<string, List<string>> invalidColumns = Methods.CheckForInvalidColumns(vm.ColumnTypes, vm.FirstFiveRows);
+
+            if (invalidColumns.Count > 0)
+            {
+                //string errorMessage = Methods.GetExceptionMessage(invalidColumns);
+                //ViewBag.Error = Methods.GetExceptionMessage(invalidColumns);
+                ViewBag.Error = "<p class='viewbag-error'>*Invalid data found* <br/>Did you mark a categorical variabal as numeral? </p>";
+                //ModelState.AddModelError(string.Empty, errorMessage);
+                TempData["ViewData"] = ViewData;
+                TempData["ModelState"] = ModelState;
+                ViewData = (ViewDataDictionary)TempData["ViewData"];
+                return View("SelectTypes", vm);
+            }
+            //check variable types
+
+
 
 
             Dictionary<string, List<string>> dictFile = Methods.CsvToDictionary(vm.Path);

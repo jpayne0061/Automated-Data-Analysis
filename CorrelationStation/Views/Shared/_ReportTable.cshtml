@@ -1,4 +1,5 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
+
 <table class="margin-top-20px">
     <tr>
         <th>Report Name</th>
@@ -6,6 +7,15 @@
         <th>Created On</th>
         <th>Author</th>
         <th>Description</th>
+        @*@if (User.Identity.GetUserId() == "222d2bb8-7d36-4ee2-9459-b951a54389ef")
+        {
+         <th>Delete</th>
+        }*@
+        @if (User.Identity.GetUserId() == "3146a6f3-818c-4623-b251-f1eb28acb43c")
+        {
+            <th>Delete</th>
+        }
+        
     </tr>
     @foreach (var statSummary in Model)
     {
@@ -24,6 +34,10 @@
             }
 
             <td>@statSummary.Description</td>
+            @if (User.Identity.GetUserId() == "3146a6f3-818c-4623-b251-f1eb28acb43c")
+            {
+                <td><span js-delete-id="@statSummary.Id" class="glyphicon glyphicon-remove"></span></td>
+            }
         </tr>
     }
 

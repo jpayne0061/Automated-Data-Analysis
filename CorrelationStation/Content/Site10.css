@@ -178,7 +178,7 @@ input[type="file"] {
 label {
 	font-size: 14px;
 	font-weight: 400;
-	padding-top: 15px;
+	padding-top: 5px;
 }
 
 .btn-success {
@@ -216,7 +216,7 @@ fieldset div input.btn-primary {
 
 .validation-summary-errors {
 	color: red;
-
+	padding-top: 10px;
 }
 
 .validation-summary-errors ul {
@@ -227,7 +227,12 @@ fieldset div input.btn-primary {
 
 div.graph-div div.js-scatterplot {
 	display: block;
-    width: 140px;
+	width: 140px;
+}
+
+.viewbag-error {
+	color: red;
+	margin-bottom: 0px;
 }
 
 /************** dat viz styling *******************/
@@ -257,6 +262,35 @@ svg:not(:root) {
 	overflow: visible;
 }
 
+/****LINE PLOT*****/
+
+.axis--x path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.line-wide {
+	fill: none;
+	stroke-width: 3px;
+
+}
+
+.inline-block {
+	display: inline-block;
+}
+.legend-div {
+	height: 11px;
+	width: 14px;
+}
+
+.legend-div-parent {
+	margin-right: 10px;
+}
 /* ********BARC CHART STYLING************* */
 
 .bar {

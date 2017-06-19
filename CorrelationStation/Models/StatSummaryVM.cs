@@ -12,6 +12,7 @@ namespace CorrelationStation.Models
         public List<AnovaStats> AnovaStats { get; set; }
         public List<ChiStats> ChiStats { get; set; }
         public List<PearsonCorr> PearsonCorrs { get; set; }
+        public List<DateAndCategory> DateAndCatories { get; set; }
         public string Path { get; set; }
         public string FileName { get; set; }
         public DateTime CreatedOn { get; set; }

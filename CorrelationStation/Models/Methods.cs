@@ -36,6 +36,67 @@ namespace CorrelationStation.Models
             }
         }
 
+
+        public static string GetExceptionMessage(Dictionary<string, List<string>> invalidColumns)
+        {
+            string exception = "<p class='customr-error'>*Invalid data found*" + "<br/>";
+
+            foreach (KeyValuePair<string, List<string>> kvp in invalidColumns)
+            {
+                string exceptionLine = "";
+
+                exceptionLine += kvp.Key + ": ";
+                for (var i = 0; i < kvp.Value.Count; i++)
+                {
+                    if (i == kvp.Value.Count - 1)
+                    {
+                        exceptionLine += kvp.Value[i] + " " + "<br/>";
+                    }
+                    else
+                    {
+                        exceptionLine += kvp.Value[i] + ", ";
+                    }
+
+                }
+
+                exception += exceptionLine;
+            }
+            return exception + "</p>";
+        }
+
+
+        public static Dictionary<string, List<string>> CheckForInvalidColumns(Dictionary<string, string> columnTypes, List<List<string>> firstFive)
+        {
+            Dictionary<string, List<string>> invalidColumns = new Dictionary<string, List<string>>();
+            //int index;
+            foreach(KeyValuePair<string, string> kvp in columnTypes)
+            {
+                if(kvp.Value == "numeral")
+                {
+                    int index = firstFive[0].IndexOf(kvp.Key);
+                    for(var i = 1; i < 5; i++)
+                    {
+                        double x;
+                        if(!double.TryParse(firstFive[i][index], out x))
+                        {
+                            if(invalidColumns.ContainsKey(kvp.Key))
+                            {
+                                invalidColumns[kvp.Key].Add(firstFive[i][index]);
+                            }
+                            else
+                            {
+                                invalidColumns.Add(kvp.Key, new List<string> { firstFive[i][index] });
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return invalidColumns;
+        }
+
+
         internal void DeleteRecords()
         {
 
@@ -128,7 +189,7 @@ namespace CorrelationStation.Models
 
         public static void MakeDropDownAndFirstFive(SelectTypeVM selectTypeVM)
         {
-            selectTypeVM.Types = new SelectList(new List<string> { "categorical", "numeral", "exclude" });
+            selectTypeVM.Types = new SelectList(new List<string> { "categorical", "numeral", "exclude", "date time" });
 
             List<List<string>> firstFive = new List<List<string>>();
 
@@ -185,6 +246,8 @@ namespace CorrelationStation.Models
             List<ChiStats> chiStatsList = new List<ChiStats>();
             List<AnovaStats> anovaStatsList = new List<AnovaStats>();
             List<PearsonCorr> pearsonCorrelations = new List<PearsonCorr>();
+            List<DateAndCategory> dateAndCategories = new List<DateAndCategory>();
+
             StatSummaryVM statsSummary = new StatSummaryVM();
             foreach (KeyValuePair<string, List<string>> entry in dictFile)
             {
@@ -200,7 +263,31 @@ namespace CorrelationStation.Models
                         continue;
                     }
 
-                    if (vm.ColumnTypes[entry.Key] == "categorical" && vm.ColumnTypes[entryCompare.Key] == "categorical")
+
+                    if ((vm.ColumnTypes[entry.Key] == "date time" || vm.ColumnTypes[entryCompare.Key] == "date time")
+                        &&
+                        (vm.ColumnTypes[entry.Key] == "categorical" || vm.ColumnTypes[entryCompare.Key] == "categorical"))
+                    {
+
+                        DateAndCategory dateCat = new DateAndCategory();
+
+                        if(vm.ColumnTypes[entry.Key] == "date time")
+                        {
+                            dateCat.GetLinePlotData(entry.Value, entryCompare.Value);
+                        }
+                        else
+                        {
+                            dateCat.GetLinePlotData(entryCompare.Value, entry.Value);
+                        }
+                        dateCat.Variable1 = entry.Key;
+                        dateCat.Variable2 = entryCompare.Key;
+
+                        dateAndCategories.Add(dateCat);
+                        _context.SaveChanges();
+                    }
+
+
+                        if (vm.ColumnTypes[entry.Key] == "categorical" && vm.ColumnTypes[entryCompare.Key] == "categorical")
                     {
                         ChiStats chiStats = new ChiStats();
 
@@ -267,6 +354,7 @@ namespace CorrelationStation.Models
             statsSummary.AnovaStats = anovaStatsList;
             statsSummary.ChiStats = chiStatsList;
             statsSummary.PearsonCorrs = pearsonCorrelations;
+            statsSummary.DateAndCatories = dateAndCategories;
             statsSummary.Path = vm.Path;
             statsSummary.FileName = vm.FileName;
             
@@ -297,6 +385,7 @@ namespace CorrelationStation.Models
             return _context.StatSummaryVMs.Include(s => s.AnovaStats)
                 .Include(s => s.ChiStats)
                 .Include(s => s.PearsonCorrs)
+                .Include(s => s.DateAndCatories)
                 .SingleOrDefault(s => s.Id == id);
         }
 
@@ -308,6 +397,7 @@ namespace CorrelationStation.Models
             List<StatSummaryVM> statSummaries = _context.StatSummaryVMs.Include(s => s.AnovaStats)
                                                                         .Include(s => s.ChiStats)
                                                                         .Include(s => s.PearsonCorrs)
+                                                                        .Include(s => s.DateAndCatories)
                                                                         .Include(s => s.ApplicationUsers)
                                                                         .Where(s => s.ApplicationUsers.Any(u => u.Id == userId))
                                                                         .ToList();
@@ -321,6 +411,7 @@ namespace CorrelationStation.Models
             List<StatSummaryVM> statSummaries = _context.StatSummaryVMs.Include(s => s.AnovaStats)
                                                                         .Include(s => s.ChiStats)
                                                                         .Include(s => s.PearsonCorrs)
+                                                                        .Include(s => s.DateAndCatories)
                                                                         .Include(s => s.ApplicationUsers)
                                                                         .ToList();
             return statSummaries;

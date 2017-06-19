@@ -18,6 +18,15 @@ namespace CorrelationStation.Models
         public DbSet<PearsonCorr> PearsonCorrs { get; set; }
         public DbSet<KeyValue> KeyValues { get; set; }
         public DbSet<StatSummaryVM> StatSummaryVMs { get; set; }
+
+        //public DbSet<CategoryCount> CategoryCounts { get; set; }
+        //public DbSet<TimePeriod> TimePeriods { get; set; }
+        public DbSet<DateAndCategory> DateAndCategories { get; set; }
+        public DbSet<DateAndCount> DateAndCounts { get; set; }
+        public DbSet<LinePlotCategory> LinePlotCategories { get; set; }
+
+
+
         public DbSet<AnInt> AnInts { get; set; }
 
         public ApplicationDbContext()
