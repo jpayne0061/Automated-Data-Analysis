@@ -24,7 +24,7 @@ namespace CorrelationStation.Models
         public DbSet<DateAndCategory> DateAndCategories { get; set; }
         public DbSet<DateAndCount> DateAndCounts { get; set; }
         public DbSet<LinePlotCategory> LinePlotCategories { get; set; }
-
+        public DbSet<DateAndNumeral> DateAndNumerals { get; set; }
 
 
         public DbSet<AnInt> AnInts { get; set; }

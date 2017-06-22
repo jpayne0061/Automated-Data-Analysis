@@ -43,6 +43,19 @@ namespace CorrelationStation.Controllers
         }
 
         [HttpGet]
+        public List<DateAndNumeralValues> GetNumeralLinePlot(int id)
+        {
+            DateAndNumeral dn = _context.DateAndNumerals.SingleOrDefault(x => x.Id == id);
+
+            List<string> dates = dn.DateData.Split(',').ToList();
+            List<string> nums = dn.NumeralData.Split(',').ToList();
+
+            List<DateAndNumeralValues> dns = Methods.ProcessDateNumerals(dates, nums).OrderBy(x => x.Date).ToList();
+
+            return dns;
+        }
+
+        [HttpGet]
         public List<List<KeyValue>> GetChiTablesData(int id)
         {
             var values = new List<List<KeyValue>>();

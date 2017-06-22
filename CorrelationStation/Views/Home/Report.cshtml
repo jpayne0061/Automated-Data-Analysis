@@ -182,6 +182,36 @@
             backgroundCount += 1;
         }
 
+        @foreach (var dateNum in Model.DateAndNumerals)
+        {
+            if (backgroundCount % 2 == 0)
+            {
+                color = "white";
+            }
+            else
+            {
+                color = "gray";
+            }
+
+            <div class="contain-stat @color">
+
+
+
+                <div>
+                    <h2 class="inline">@dateNum.NumeralName and </h2> <h2 class="inline">@dateNum.DateName</h2>
+
+                    <div class="show-graphs get-date-numeral-plot" js-id="@dateNum.Id">Get Line Plot</div>
+                    <div class="show-graphs js-show-graphs hide-show-link">Hide/Show Chart</div>
+                    <div class="graph-div"></div>
+
+                    @*paste here*@
+
+
+                </div>
+            </div>
+            backgroundCount += 1;
+        }
+
 
 
         @*********************************************@

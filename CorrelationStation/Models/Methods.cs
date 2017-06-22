@@ -35,6 +35,55 @@ namespace CorrelationStation.Models
                 
             }
         }
+        public static bool CheckIfDateValid(string value)
+        {
+            DateTime dt;
+            if (DateTime.TryParse(value, out dt))
+            {
+                return true;
+            }
+            else
+            {
+                if(DateTime.TryParse(value + "/1", out dt))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+        }
+
+
+        public static List<DateAndNumeralValues> ProcessDateNumerals(List<string> dates, List<string> numerals)
+        {
+            List<DateAndNumeralValues> dateNumPairs = new List<DateAndNumeralValues>();
+
+
+            for(var i = 0; i < dates.Count; i++)
+            {
+                if ((dates[i] == null || dates[i] == "") || (numerals[i] == null || numerals[i] == ""))
+                {
+                    continue;
+                }
+                if(Methods.CheckIfDateValid(dates[i]))
+                {
+                    DateAndNumeralValues dn = new DateAndNumeralValues();
+                    //dn.Date = DateTime.Parse(dates[i]);
+                    DateTime dt;
+                    dn.Date = DateTime.TryParse(dates[i], out dt) ? dt : DateTime.Parse(dates[i] + "/1");
+                    dn.Numeral = double.Parse(numerals[i]);
+                    dateNumPairs.Add(dn);
+                }
+
+
+
+            }
+
+            return dateNumPairs;
+        }
 
 
         public static string GetExceptionMessage(Dictionary<string, List<string>> invalidColumns)
@@ -73,9 +122,16 @@ namespace CorrelationStation.Models
             {
                 if(kvp.Value == "numeral")
                 {
+
+
                     int index = firstFive[0].IndexOf(kvp.Key);
                     for(var i = 1; i < 5; i++)
                     {
+                        if (firstFive[i][index] == "" || firstFive[i][index] == null)
+                        {
+                            continue;
+                        }
+
                         double x;
                         if(!double.TryParse(firstFive[i][index], out x))
                         {
@@ -123,15 +179,17 @@ namespace CorrelationStation.Models
 
         public static List<double[]> ProcessScatterPlotRequest(string data1, string data2)
         {
-            List<double> dataOne = data1.Split(',').Select(x => double.Parse(x)).ToList();
-            List<double> dataTwo = data2.Split(',').Select(x => double.Parse(x)).ToList();
+            //int count = data2.Split(',').Select(x => double.Parse(x)).ToList().Count();
 
+            List<double>[] dataOne = RemoveOutliers(data1.Split(',').Select(x => double.Parse(x)).ToList(), data2.Split(',').Select(x => double.Parse(x)).ToList());
+            //List<double> dataTwo = RemoveOutliers(data2.Split(',').Select(x => double.Parse(x)).ToList());
+            int count = dataOne[0].Count();
 
             List<double[]> dataPairs = new List<double[]>();
 
-            for(var i = 0; i < dataOne.Count; i++)
+            for(var i = 0; i < count; i++)
             {
-                dataPairs.Add(new double[2] { dataOne[i], dataTwo[i] });
+                dataPairs.Add(new double[2] { dataOne[0][i], dataOne[1][i] });
             }
 
             return dataPairs;
@@ -247,6 +305,7 @@ namespace CorrelationStation.Models
             List<AnovaStats> anovaStatsList = new List<AnovaStats>();
             List<PearsonCorr> pearsonCorrelations = new List<PearsonCorr>();
             List<DateAndCategory> dateAndCategories = new List<DateAndCategory>();
+            List<DateAndNumeral> dateAndNumerals = new List<DateAndNumeral>();
 
             StatSummaryVM statsSummary = new StatSummaryVM();
             foreach (KeyValuePair<string, List<string>> entry in dictFile)
@@ -283,11 +342,36 @@ namespace CorrelationStation.Models
                         dateCat.Variable2 = entryCompare.Key;
 
                         dateAndCategories.Add(dateCat);
-                        _context.SaveChanges();
+                        //_context.SaveChanges();
+                    }
+
+                    if ((vm.ColumnTypes[entry.Key] == "date time" || vm.ColumnTypes[entryCompare.Key] == "date time")
+                        &&
+                        (vm.ColumnTypes[entry.Key] == "numeral" || vm.ColumnTypes[entryCompare.Key] == "numeral"))
+                    {
+
+                        DateAndNumeral dateNum = new DateAndNumeral();
+
+                        if (vm.ColumnTypes[entry.Key] == "date time")
+                        {
+                            dateNum.MakeDataBlob(entry.Value, entryCompare.Value);
+                            dateNum.DateName = entry.Key;
+                            dateNum.NumeralName = entryCompare.Key;
+                        }
+                        else
+                        {
+                            dateNum.MakeDataBlob(entryCompare.Value, entry.Value);
+                            dateNum.DateName = entryCompare.Key;
+                            dateNum.NumeralName = entry.Key;
+                        }
+
+
+                        dateAndNumerals.Add(dateNum);
+                        //_context.SaveChanges();
                     }
 
 
-                        if (vm.ColumnTypes[entry.Key] == "categorical" && vm.ColumnTypes[entryCompare.Key] == "categorical")
+                    if (vm.ColumnTypes[entry.Key] == "categorical" && vm.ColumnTypes[entryCompare.Key] == "categorical")
                     {
                         ChiStats chiStats = new ChiStats();
 
@@ -297,8 +381,8 @@ namespace CorrelationStation.Models
                         chiStats.Variable2 = entry.Key.Replace("\"", "");
 
                         chiStatsList.Add(chiStats);
-                        _context.ChiStats.Add(chiStats);
-                        _context.SaveChanges();
+                        //_context.ChiStats.Add(chiStats);
+                        //_context.SaveChanges();
 
                     }
 
@@ -355,6 +439,7 @@ namespace CorrelationStation.Models
             statsSummary.ChiStats = chiStatsList;
             statsSummary.PearsonCorrs = pearsonCorrelations;
             statsSummary.DateAndCatories = dateAndCategories;
+            statsSummary.DateAndNumerals = dateAndNumerals;
             statsSummary.Path = vm.Path;
             statsSummary.FileName = vm.FileName;
             
@@ -386,6 +471,7 @@ namespace CorrelationStation.Models
                 .Include(s => s.ChiStats)
                 .Include(s => s.PearsonCorrs)
                 .Include(s => s.DateAndCatories)
+                .Include(s => s.DateAndNumerals)
                 .SingleOrDefault(s => s.Id == id);
         }
 
@@ -398,6 +484,7 @@ namespace CorrelationStation.Models
                                                                         .Include(s => s.ChiStats)
                                                                         .Include(s => s.PearsonCorrs)
                                                                         .Include(s => s.DateAndCatories)
+                                                                        .Include(s => s.DateAndNumerals)
                                                                         .Include(s => s.ApplicationUsers)
                                                                         .Where(s => s.ApplicationUsers.Any(u => u.Id == userId))
                                                                         .ToList();
@@ -412,6 +499,7 @@ namespace CorrelationStation.Models
                                                                         .Include(s => s.ChiStats)
                                                                         .Include(s => s.PearsonCorrs)
                                                                         .Include(s => s.DateAndCatories)
+                                                                        .Include(s => s.DateAndNumerals)
                                                                         .Include(s => s.ApplicationUsers)
                                                                         .ToList();
             return statSummaries;
@@ -431,6 +519,36 @@ namespace CorrelationStation.Models
             else
                 return false;
 
+        }
+
+        public static List<double>[] RemoveOutliers(List<double> nums, List<double> nums2)
+        {
+            List<double> numsOrdered = nums.OrderBy(x => x).ToList();
+
+            double q3 = numsOrdered[(int)(numsOrdered.Count() * 0.75)];
+            double q1 = numsOrdered[(int)(numsOrdered.Count() * 0.25)];
+            double iqr = q3 - q1;
+
+            List<double> numsOrdered2 = nums2.OrderBy(x => x).ToList();
+
+            double q32 = numsOrdered2[(int)(numsOrdered2.Count() * 0.75)];
+            double q12 = numsOrdered2[(int)(numsOrdered2.Count() * 0.25)];
+            double iqr2 = q32 - q12;
+
+            List<double> noOuts1 = new List<double>();
+            List<double> noOuts2 = new List<double>();
+
+            for (var i = 0; i < nums.Count; i++)
+            {
+                if(!(nums[i] > iqr*1.5+q3) && !(nums2[i] > iqr2*1.5+q32))
+                {
+                    noOuts1.Add(nums[i]);
+                    noOuts2.Add(nums2[i]);
+                }
+            }
+
+            return new List<double>[] { noOuts1, noOuts2 };
+            
         }
 
     }

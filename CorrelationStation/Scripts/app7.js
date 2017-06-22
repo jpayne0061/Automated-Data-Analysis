@@ -115,103 +115,142 @@ var chiPercentages = function (data, ref) {
 }
 
 
+var makeNumeralLinePlot = function (data, ref) {
+    var classUnique = new Date().valueOf();
+
+    var graphDiv = ref.nextAll(".graph-div:first");
+    graphDiv.empty();
+
+    graphDiv.append("<svg class='chart" + classUnique + "'></svg>");
+
+    var svg = d3.select(".chart" + classUnique),
+    margin = { top: 20, right: 80, bottom: 30, left: 50 },
+    width = 960 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleTime().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]);
+
+
+    //*********FIX d.date and d.close******************
+    var line = d3.line()
+    .x(function (d) { return x(Date.parse(d["Date"])); })
+    .y(function (d) { return y(d["Numeral"]); });
+
+
+    //*********FIX d.date and d.close******************
+    //need to get min and max
+    //var xMax = d3.max(data, function (d) { return d[0]; })
+
+    x.domain(d3.extent(data, function (d) { return Date.parse(d["Date"]); }));
+    y.domain(d3.extent(data, function (d) { return d["Numeral"]; }));
+
+
+    g.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .select(".domain")
+    .remove();
+
+    g.append("g")
+    .call(d3.axisLeft(y))
+    .append("text")
+    .attr("fill", "#000")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", "0.71em")
+    .attr("text-anchor", "end")
+    //.text("Price ($)");
+    g.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round")
+    .attr("stroke-width", 1.5)
+    .attr("d", line);
+
+    graphDiv.css("height", "500px");
+}
+
+
 var scatterPlot = function (data, ref) {
-    console.log("from scatter: ", data);
-    var target = ref.nextAll(".graph-div:first");
-    target.empty();
+    globalData = data;
+    var classUnique = new Date().valueOf();
+
+    var graphDiv = ref.nextAll(".graph-div:first");
+    graphDiv.empty();
+
+    graphDiv.append("<svg class='chart" + classUnique + "'></svg>");
 
     var radius = 2;
 
-    if (data.length > 10000)
-    {
+    if (data.length > 10000) {
         radius = 1;
     }
 
-    var w = 500;
-    var h = 500;
+    var svg = d3.select(".chart" + classUnique),
+    margin = { top: 20, right: 80, bottom: 30, left: 50 },
+    width = 960 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var padding = 40;
+    var x = d3.scaleLinear()
+        .domain([0, d3.max(data, function (d) { return d[0]; })])
+        .range([0, width]),
 
-    var xScale = d3.scale.linear()
-                     .domain([0, d3.max(data, function (d) { return d[0]; })])
-                     .range([padding, w - padding]);
+    y = d3.scaleLinear()
+        .domain([0, d3.max(data, function (d) { return d[1]; })])
+        .range([height, 0]);
 
-    var yScale = d3.scale.linear()
-                     .domain([0, d3.max(data, function (d) { return d[1]; })])
-                     .range([h - padding, padding]);
+    g.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .select(".domain")
+    .remove();
 
 
-    var svg = d3.select("#" + ref.nextAll(".graph-div:first").attr("id"))
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h);
+    g.append('text')
+      .attr("transform",
+          "translate(" + (width / 2) + " ," +
+                         (height) + ")")
+      .attr('dy', 45) // adjust distance from the bottom edge
+      .attr('class', 'axis-label')
+      .attr('text-anchor', 'middle')
+      .text(ref.attr("js-data-1"));
 
-   svg.selectAll("circle")
-   .data(data)
-   .enter()
-   .append("circle")
-   .attr("cx", function (d) {
-       return xScale(d[0]);
-    })
-   .attr("cy", function (d) {
-       return yScale(d[1]);
-   })
-   .attr("r", radius);
-   
-   var yAxis = d3.svg.axis()
-                  .scale(yScale)
-                  .orient("left")
-                  .ticks(5);
-   svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(" + 40 + ",0)")
-    .call(yAxis);
+    g.append("g")
+    .call(d3.axisLeft(y))
+    .append("text")
+    .attr("fill", "#000")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", "0.71em")
+    .attr("text-anchor", "end")
 
-    svg.append("text")
+    g.append('text')
       .attr("transform", "rotate(-90)")
-      .attr("y", 0 - 40)
-      .attr("x",0 - (h / 2))
+      .attr("y", -100)
+      .attr("x", 0 - (height / 2))
       .attr("dy", "1em")
       .style("text-anchor", "middle")
       .text(ref.attr("js-data-2"));
 
-   var xAxis = d3.svg.axis()
-                 .scale(xScale)
-                 .orient("bottom")
-                 .ticks(5);
+    g.selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", function (d) { return x(d[0]); })
+    .attr("cy", function (d) { return y(d[1]); })
+    .attr("r", radius);
 
-    svg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0," + (h - padding) + ")")
-        .call(xAxis);
 
-    svg.append("text")
-    .attr("transform",
-          "translate(" + (w / 2) + " ," +
-                         (h ) + ")")
-    .style("text-anchor", "middle")
-    .text(ref.attr("js-data-1"));
+    graphDiv.css("height", "500px");
 
 }
 
 
-//var getAnovaMeans = function(data, ref)
-//{
-//    var graphDiv = ref.nextAll(".graph-div:first");
-//    graphDiv.empty();
-//    graphDiv.append("<table>");
-
-//    graphDiv.append("<tr><th colspan='2'>Means</th></tr>");
-
-//    for (var i = 0; i < data.length; i++)
-//    {
-//        graphDiv.append("<tr>");
-//        graphDiv.append("<td>" + data[i]["Key"] + "</td><td>" + data[i]["Value"] + "</td>");
-//        graphDiv.append("<tr>");
-//    }
-
-//    graphDiv.append("</table>");
-//}
 
 var dataLoad = function (ref) {
     var target = ref.nextAll(".graph-div:first");
@@ -519,6 +558,67 @@ var hoverNow = function () {
 
 }
 
+var makeNumeralLinePlot = function(data, ref)
+{
+    var classUnique = new Date().valueOf();
+
+    var graphDiv = ref.nextAll(".graph-div:first");
+    graphDiv.empty();
+
+    graphDiv.append("<svg class='chart" + classUnique + "'></svg>");
+
+    var svg = d3.select(".chart" + classUnique),
+    margin = { top: 20, right: 80, bottom: 30, left: 50 },
+    width = 960 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleTime().range([0, width]),
+    y = d3.scaleLinear().range([height, 0]);
+
+
+    //*********FIX d.date and d.close******************
+    var line = d3.line()
+    .x(function (d) { return x(Date.parse(d["Date"])); })
+    .y(function (d) { return y(d["Numeral"]); });
+
+
+    //*********FIX d.date and d.close******************
+    //need to get min and max
+    //var xMax = d3.max(data, function (d) { return d[0]; })
+
+    x.domain(d3.extent(data, function (d) { return Date.parse(d["Date"]); }));
+    y.domain(d3.extent(data, function (d) { return d["Numeral"]; }));
+
+
+    g.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x))
+    .select(".domain")
+    .remove();
+
+    g.append("g")
+    .call(d3.axisLeft(y))
+    .append("text")
+    .attr("fill", "#000")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", "0.71em")
+    .attr("text-anchor", "end")
+    //.text("Price ($)");
+    g.append("path")
+    .datum(data)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-linecap", "round")
+    .attr("stroke-width", 1.5)
+    .attr("d", line);
+
+    graphDiv.css("height", "500px");
+}
+
+
 var makeLinePlot = function (data, ref) {
     //console.log("from makeLinePlot: ", data);
 
@@ -623,126 +723,151 @@ var makeLinePlot = function (data, ref) {
 
 }
 
+////get-date-numeral-plot
+
+$(document.body).on("click", ".get-date-numeral-plot", function () {
+
+    var ref = $(this);
+    dataLoad(ref);
+    ref.next(".hide-show-link").toggle(200);
+    ref.toggle(200);
+    var chiId = ref.attr("js-id");
+    $.ajax({
+        url: "/api/DataPoints/GetNumeralLinePlot/" + chiId,
+        cache: false
+    })
+        .done(function (data) {
+            console.log("from controller: ", data);
+            //removeLoader(ref);
+            //getAnovaMeans(data, ref);
+            makeNumeralLinePlot(data, ref);
+
+        }).fail(function () {
+            alert("yikes, no bueno");
+        });
+
+});
 
 
+$(document.body).on("click", ".get-date-multiline-plot", function () {
 
-    $(document.body).on("click", ".get-date-multiline-plot", function () {
-
-        var ref = $(this);
-        dataLoad(ref);
-        ref.next(".hide-show-link").toggle(200);
-        ref.toggle(200);
-        var chiId = ref.attr("js-id");
-        $.ajax({
-            url: "/api/DataPoints/GetDateCategoryLinePlot/" + chiId,
-            cache: false
-        })
-         .done(function (data) {
-             console.log("from controller: ", data);
-             //removeLoader(ref);
-             //getAnovaMeans(data, ref);
-             makeLinePlot(data, ref);
+    var ref = $(this);
+    dataLoad(ref);
+    ref.next(".hide-show-link").toggle(200);
+    ref.toggle(200);
+    var chiId = ref.attr("js-id");
+    $.ajax({
+        url: "/api/DataPoints/GetDateCategoryLinePlot/" + chiId,
+        cache: false
+    })
+        .done(function (data) {
+            console.log("from controller: ", data);
+            //removeLoader(ref);
+            //getAnovaMeans(data, ref);
+            makeLinePlot(data, ref);
              
-         }).fail(function () {
-             alert("yikes, no bueno");
-         });
-
-    });
-
-
-
-
-
-    //$(document.body).on("click", ".get-anova-means", function () {
-    //    var ref = $(this);
-    //    dataLoad(ref);
-    //    ref.next(".hide-show-link").toggle();
-    //    ref.toggle();
-    //    var chiId = ref.attr("js-id");
-    //    $.ajax({
-    //        url: "/api/DataPoints/GetAnovaMeans/" + chiId,
-    //        cache: false
-    //    })
-    //     .done(function (data) {
-    //         removeLoader(ref);
-    //         getAnovaMeans(data, ref);
-    //     }).fail(function () {
-    //         alert("yikes, no bueno");
-    //     });
-
-    //});
-
-
-    var saveSuccess = function (selector, ref) {
-        var target = $(selector);
-        target.empty();
-
-        target.append("<div class='bold'>Saved!</div>");
-        target.fadeOut(2000);
-        ref.fadeOut(2000);
-    }
-
-    var dataLoadSave = function (selector) {
-        var target = $(selector);
-        console.log("data load save: ", selector);
-        target.append("<div id='data-load'></div>");
-
-    }
-
-
-
-    $(document.body).on("click", ".js-save-report", function () {
-        var reportId = $(this).attr("js-report-id");
-        dataLoadSave("#js-saved-message");
-        var ref = $(this);
-        $.ajax({
-            url: "/api/DataPoints/SaveToReports/" + reportId,
-            cache: false
-        })
-        .done(function () {
-            saveSuccess("#js-saved-message", ref);
         }).fail(function () {
             alert("yikes, no bueno");
         });
 
+});
 
+
+
+
+
+//$(document.body).on("click", ".get-anova-means", function () {
+//    var ref = $(this);
+//    dataLoad(ref);
+//    ref.next(".hide-show-link").toggle();
+//    ref.toggle();
+//    var chiId = ref.attr("js-id");
+//    $.ajax({
+//        url: "/api/DataPoints/GetAnovaMeans/" + chiId,
+//        cache: false
+//    })
+//     .done(function (data) {
+//         removeLoader(ref);
+//         getAnovaMeans(data, ref);
+//     }).fail(function () {
+//         alert("yikes, no bueno");
+//     });
+
+//});
+
+
+var saveSuccess = function (selector, ref) {
+    var target = $(selector);
+    target.empty();
+
+    target.append("<div class='bold'>Saved!</div>");
+    target.fadeOut(2000);
+    ref.fadeOut(2000);
+}
+
+var dataLoadSave = function (selector) {
+    var target = $(selector);
+    console.log("data load save: ", selector);
+    target.append("<div id='data-load'></div>");
+
+}
+
+
+
+$(document.body).on("click", ".js-save-report", function () {
+    var reportId = $(this).attr("js-report-id");
+    dataLoadSave("#js-saved-message");
+    var ref = $(this);
+    $.ajax({
+        url: "/api/DataPoints/SaveToReports/" + reportId,
+        cache: false
+    })
+    .done(function () {
+        saveSuccess("#js-saved-message", ref);
+    }).fail(function () {
+        alert("yikes, no bueno");
     });
 
 
+});
 
-    $('#File').bind('change', function () {
-        var fileName = '';
-        fileName = $(this).val();
-        $('#file-selected').html(fileName);
+
+
+$('#File').bind('change', function () {
+    var fileName = '';
+    fileName = $(this).val();
+    $('#file-selected').html(fileName);
+});
+
+$(document.body).on("click", ".login-index", function () {
+    $("#login-form").toggle(500);
+
+});
+
+$(document.body).on("click", ".js-show-next", function () {
+    $(this).next().toggle(500);
+
+});
+
+
+var removeElement = function (ref) {
+    ref.parent().parent().fadeOut(300);
+}
+
+$(document.body).on("click", ".glyphicon-remove", function () {
+    var ref = $(this);
+    var id = $(this).attr("js-delete-id");
+    $.ajax({
+        url: "/api/DataPoints/RemoveStatSummary/" + id,
+        cache: false
+    })
+    .done(function (ref) {
+        removeElement(ref);
+    }).fail(function () {
+        alert("yikes, no bueno");
     });
 
-    $(document.body).on("click", ".login-index", function () {
-        $("#login-form").toggle(500);
 
-    });
-
-    $(document.body).on("click", ".js-show-next", function () {
-        $(this).next().toggle(500);
-
-    });
+});
 
 
-    var removeElement = function (ref) {
-        ref.parent().parent().fadeOut(300);
-    }
-
-    $(document.body).on("click", ".glyphicon-remove", function () {
-        var ref = $(this);
-        var id = $(this).attr("js-delete-id");
-        $.ajax({
-            url: "/api/DataPoints/RemoveStatSummary/" + id,
-            cache: false
-        })
-        .done(function (ref) {
-            removeElement(ref);
-        }).fail(function () {
-            alert("yikes, no bueno");
-        });
-
-
-    });

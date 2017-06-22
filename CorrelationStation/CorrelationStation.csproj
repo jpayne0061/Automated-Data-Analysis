@@ -253,6 +253,10 @@
     <Compile Include="Migrations\201706181301304_LinePlotCategoryAndDateAndCount.Designer.cs">
       <DependentUpon>201706181301304_LinePlotCategoryAndDateAndCount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706192257060_DateAndNumerals.cs" />
+    <Compile Include="Migrations\201706192257060_DateAndNumerals.Designer.cs">
+      <DependentUpon>201706192257060_DateAndNumerals.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AnInt.cs" />
@@ -265,6 +269,8 @@
     <Compile Include="Models\Column.cs" />
     <Compile Include="Models\DateAndCategory.cs" />
     <Compile Include="Models\DateAndCount.cs" />
+    <Compile Include="Models\DateAndNumeral.cs" />
+    <Compile Include="Models\DateAndNumeralValues.cs" />
     <Compile Include="Models\FTable.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\KeyValue.cs" />
@@ -409,6 +415,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706181301304_LinePlotCategoryAndDateAndCount.resx">
       <DependentUpon>201706181301304_LinePlotCategoryAndDateAndCount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706192257060_DateAndNumerals.resx">
+      <DependentUpon>201706192257060_DateAndNumerals.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
