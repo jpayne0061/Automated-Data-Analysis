@@ -433,38 +433,90 @@ var getBarGraph = function (data, ref) {
         width = data.length*35 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
     }
+    var svg = d3.select(".chart" + classUnique);
+    var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], 0.1);
+    //var x = d3.scaleLinear()
+    //.domain([0, d3.max(data, function (d) { return d[0]; })])
+    //.range([0, width]),
 
-    var y = d3.scale.linear()
-        .range([height, 0]);
+    var y = d3.scaleLinear()
+    .range([height, 0]);
 
-    var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left");
-
-    var chart = d3.select(".chart" + classUnique)
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var x = d3.scaleBand()
+    .range([0, width])
+          .padding(0.1);
 
 
     x.domain(data.map(function (d) { return d["Key"]; }));
     y.domain([0, d3.max(data, function (d) { return d["Value"]; })]);
+    //var y = d3.scale.linear()
+    //    .range([height, 0]);
+
+    //x.domain(data.map(function (d) { return d["Key"]; }));
+    //y.domain([0, d3.max(data, function (d) { return d["Value"]; })]);
+
+    //var xAxis = d3.svg.axis()
+    //.scale(x)
+    //.orient("bottom");
+
+    //var yAxis = d3.svg.axis()
+    //    .scale(y)
+    //    .orient("left");
+
+    //var chart = d3.select(".chart" + classUnique)
+    //    .attr("width", width + margin.left + margin.right)
+    //    .attr("height", height + margin.top + margin.bottom)
+    //  .append("g")
+    //    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    chart.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-    .selectAll("text")
-        //this rotates x axis labeling, but doesn't line up well with bars
+    //chart.append("g")
+    //    .attr("class", "x axis")
+    //    .attr("transform", "translate(0," + height + ")")
+    //    .call(xAxis)
+    //.selectAll("text")
+    //    //this rotates x axis labeling, but doesn't line up well with bars
+    //    .attr("y", 0)
+    //    .attr("x", 9)
+    //    .attr("dy", ".35em")
+    //    .attr("transform", "rotate(90)")
+    //    .style("text-anchor", "start")
+    //;
+
+    //chart.append("g")
+    //    .attr("class", "y axis")
+    //    .call(yAxis);
+
+    //chart.selectAll(".bar")
+    //    .data(data)
+    //  .enter().append("rect")
+    //    .attr("class", "bar")
+    //    .attr("x", function (d) { return x(d["Key"]); })
+    //    .attr("y", function (d) { return y(d["Value"]); })
+    //    .attr("height", function (d) { return height - y(d["Value"]); })
+    //    .attr("width", x.rangeBand());
+
+    //d3.select(".chart" + classUnique).attr("height", height + longest);
+
+    //******************************************
+      g.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function (d) { return x(d["Key"]); })
+      .attr("width", x.bandwidth())
+      .attr("y", function (d) { return y(d["Value"]); })
+      .attr("height", function (d) { return height - y(d["Value"]); })
+
+    // add the x Axis
+
+
+  g.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .selectAll("text")
         .attr("y", 0)
         .attr("x", 9)
         .attr("dy", ".35em")
@@ -472,20 +524,11 @@ var getBarGraph = function (data, ref) {
         .style("text-anchor", "start")
     ;
 
-    chart.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
+  // add the y Axis
+  g.append("g")
+      .call(d3.axisLeft(y));
 
-    chart.selectAll(".bar")
-        .data(data)
-      .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function (d) { return x(d["Key"]); })
-        .attr("y", function (d) { return y(d["Value"]); })
-        .attr("height", function (d) { return height - y(d["Value"]); })
-        .attr("width", x.rangeBand());
-
-    d3.select(".chart" + classUnique).attr("height", height + longest);
+  d3.select(".chart" + classUnique).attr("height", height + longest);
 }
 
 
