@@ -136,7 +136,7 @@
 
                     </div>
 
-                    <div class="show-graphs get-anova-means get-anova-bar" js-id="@anovaStat.Id">Get Bar Chart of Means</div>
+                    <div class="show-graphs get-anova-means get-anova-bar" js-id="@anovaStat.Id" js-categorical="@anovaStat.CategoricalVariable">Get Bar Chart of Means</div>
                     <div class="show-graphs js-show-graphs hide-show-link">Hide/Show Chart</div>
                     <div class="graph-div"></div>
 
@@ -149,7 +149,6 @@
         }
 
 
-        @*COPY OF ANOVA STATSS*******************@
 
 
         @foreach (var dateCat in Model.DateAndCatories)

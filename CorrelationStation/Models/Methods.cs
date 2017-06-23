@@ -540,7 +540,7 @@ namespace CorrelationStation.Models
 
             for (var i = 0; i < nums.Count; i++)
             {
-                if(!(nums[i] > iqr*1.5+q3) && !(nums2[i] > iqr2*1.5+q32))
+                if(!(nums[i] > iqr*2+q3) && !(nums2[i] > iqr2*2+q32))
                 {
                     noOuts1.Add(nums[i]);
                     noOuts2.Add(nums2[i]);

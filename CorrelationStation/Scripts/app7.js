@@ -397,6 +397,8 @@ $(document.body).on("click", ".get-chi-percentages", function () {
 
 var getBarGraph = function (data, ref) {
     //find longest word
+    globalData = ref;
+    
     var longest = 0;
     for (var i = 0; i < data.length; i++) {
         if (data[i]["Key"].length > longest) {
@@ -451,56 +453,8 @@ var getBarGraph = function (data, ref) {
 
     x.domain(data.map(function (d) { return d["Key"]; }));
     y.domain([0, d3.max(data, function (d) { return d["Value"]; })]);
-    //var y = d3.scale.linear()
-    //    .range([height, 0]);
-
-    //x.domain(data.map(function (d) { return d["Key"]; }));
-    //y.domain([0, d3.max(data, function (d) { return d["Value"]; })]);
-
-    //var xAxis = d3.svg.axis()
-    //.scale(x)
-    //.orient("bottom");
-
-    //var yAxis = d3.svg.axis()
-    //    .scale(y)
-    //    .orient("left");
-
-    //var chart = d3.select(".chart" + classUnique)
-    //    .attr("width", width + margin.left + margin.right)
-    //    .attr("height", height + margin.top + margin.bottom)
-    //  .append("g")
-    //    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-    //chart.append("g")
-    //    .attr("class", "x axis")
-    //    .attr("transform", "translate(0," + height + ")")
-    //    .call(xAxis)
-    //.selectAll("text")
-    //    //this rotates x axis labeling, but doesn't line up well with bars
-    //    .attr("y", 0)
-    //    .attr("x", 9)
-    //    .attr("dy", ".35em")
-    //    .attr("transform", "rotate(90)")
-    //    .style("text-anchor", "start")
-    //;
-
-    //chart.append("g")
-    //    .attr("class", "y axis")
-    //    .call(yAxis);
-
-    //chart.selectAll(".bar")
-    //    .data(data)
-    //  .enter().append("rect")
-    //    .attr("class", "bar")
-    //    .attr("x", function (d) { return x(d["Key"]); })
-    //    .attr("y", function (d) { return y(d["Value"]); })
-    //    .attr("height", function (d) { return height - y(d["Value"]); })
-    //    .attr("width", x.rangeBand());
-
-    //d3.select(".chart" + classUnique).attr("height", height + longest);
-
-    //******************************************
       g.selectAll(".bar")
       .data(data)
     .enter().append("rect")
@@ -527,6 +481,17 @@ var getBarGraph = function (data, ref) {
   // add the y Axis
   g.append("g")
       .call(d3.axisLeft(y));
+
+  //g.axis()
+  //g.call().outerTickSize(0)
+  //axis.tickSizeOuter(0)
+  g.append("text")
+      .attr("x", (width / 2))
+      .attr("y", 0 - (margin.top / 2))
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px")
+      .style("text-decoration", "underline")
+      .text("Average/Mean for each " + ref.attr("js-categorical"));
 
   d3.select(".chart" + classUnique).attr("height", height + longest);
 }
