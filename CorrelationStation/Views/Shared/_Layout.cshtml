@@ -21,13 +21,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Explore New Dataset", "Upload", "Home")</li>
+                    <li>@Html.ActionLink("New Report", "Upload", "Home")</li>
                     @if (Request.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("My Reports", "StatSummaries", "Home")</li>
                     }
                     
                     <li>@Html.ActionLink("All Reports", "AllStatSummaries", "Home")</li>
+                    <li>@Html.ActionLink("Example Report", "GetReport", "Home", new { id="11"}, null)</li>
                     @*<li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")

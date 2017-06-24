@@ -494,6 +494,8 @@ var getBarGraph = function (data, ref) {
       .text("Average/Mean for each " + ref.attr("js-categorical"));
 
   d3.select(".chart" + classUnique).attr("height", height + longest);
+  console.log(data.length);
+  graphDiv.css("width", data.length*35 + "px");
 }
 
 

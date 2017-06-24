@@ -169,9 +169,14 @@ namespace CorrelationStation.Controllers
         //[HttpGet]
         //public IHttpActionResult RemoveStatSummary(int id)
         //{
-        //    StatSummaryVM ss = _context.StatSummaryVMs.Include(x => x.AnovaStats)
-        //                                              .Include(x => x.ChiStats)
-        //                                                //.Include(x => x.PearsonCorrs)
+        //    StatSummaryVM ss = _context.StatSummaryVMs.Include(x => x.AnovaStats.Select(a => a.Means))
+        //                                              .Include(x => x.ChiStats.Select(c => c.ExpectedPercentage))
+        //                                              .Include(x => x.ChiStats.Select(c => c.ExpectedValues))
+        //                                              .Include(x => x.ChiStats.Select(c => c.ObservedPercentage))
+        //                                              .Include(x => x.ChiStats.Select(c => c.ObservedValues))
+        //                                                .Include(x => x.PearsonCorrs)
+        //                                                .Include(x => x.DateAndCatories.Select(dc => dc.LinePlotCategories.Select(lp => lp.DateAndCounts)))
+        //                                                .Include(x => x.DateAndNumerals)
         //                                                .SingleOrDefault(x => x.Id == id);
 
 
@@ -181,8 +186,48 @@ namespace CorrelationStation.Controllers
         //    //}
 
         //    //deleteMe.Prices.ToList().ForEach(p => db.ItemPrices.Remove(p));
+        //    //var itemsToDelete = _context.Set<KeyValue>().Where(kv => kv.);
+        //    List <AnovaStats> anovas = ss.AnovaStats.ToList();
+        //    List<ChiStats> chis = ss.ChiStats.ToList();
+        //    List<PearsonCorr> pcs = ss.PearsonCorrs.ToList();
+        //    List<DateAndNumeral> dns = ss.DateAndNumerals.ToList();
+        //    List<DateAndCategory> dcs = ss.DateAndCatories.ToList();
+
+        //    foreach (AnovaStats anova in anovas)
+        //    {
+
+        //       _context.KeyValues.RemoveRange(anova.Means);
+                
+        //    }
         //    ss.AnovaStats.ToList().ForEach(a => _context.AnovaStats.Remove(a));
+
+        //    foreach (ChiStats chi in chis)
+        //    {
+
+        //        _context.KeyValues.RemoveRange(chi.ExpectedPercentage);
+        //        _context.KeyValues.RemoveRange(chi.ExpectedValues);
+        //        _context.KeyValues.RemoveRange(chi.ObservedPercentage);
+        //        _context.KeyValues.RemoveRange(chi.ObservedValues);
+
+        //    }
+            
+        //    foreach(DateAndCategory dc in dcs)
+        //    {
+        //        foreach(LinePlotCategory lpc in dc.LinePlotCategories)
+        //        {
+        //            _context.DateAndCounts.RemoveRange(lpc.DateAndCounts);
+        //        }
+        //        _context.LinePlotCategories.RemoveRange(dc.LinePlotCategories);
+        //    }
+
+        //    ss.DateAndCatories.ToList().ForEach(dc => _context.DateAndCategories.Remove(dc));
+
+        //    ss.DateAndNumerals.ToList().ForEach(dn => _context.DateAndNumerals.Remove(dn));
+
         //    ss.ChiStats.ToList().ForEach(c => _context.ChiStats.Remove(c));
+
+        //    ss.PearsonCorrs.ToList().ForEach(p => _context.PearsonCorrs.Remove(p));
+
 
         //    _context.Entry(ss).State = EntityState.Deleted;
 

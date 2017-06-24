@@ -9,13 +9,12 @@
     CSV Analyzer is a tool that helps you find associations and correlations between variables/columns in your csv file.
     <br />
     <br />
-    After you upload a csv file, you will be prompted to identify each column as either categorical or numeral(currently, these are the only variable types the app supports).
+    After you upload a csv file, you will be prompted to identify each column as either categorical, Date Time or numeral(currently, these are the only variable types the app supports).
     You also have the option of giving your report a name and description.
     <br/>
     <br />
-    After you prepare your report, CSV Analyzer will run statistical tests on each of the columns/variables
-    that you have selected. Depending on the variable types, CSV Analyzer will run either an Anova test, Chi-squared test or Pearson Correlation Coefficient. These tests are accompanied
-    with data visualizations.
+    After you prepare your report, CSV Analyzer will run statistical tests and/or produce data visualizations on each of the columns/variables
+    that you have selected. Depending on the variable types, CSV Analyzer may run an Anova test, Chi-squared test or Pearson Correlation Coefficient. 
 </p>
 
 @using (Html.BeginForm("SelectTypes", "Home", FormMethod.Post,
