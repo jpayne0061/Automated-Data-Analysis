@@ -23,7 +23,6 @@ namespace CorrelationStation.Models
         public double CriticalValueAtAlphaZeroFive { get; set; }
         public bool SigAtPointZeroFive { get; set; }
         public bool SigAtPointZeroOne { get; set; }
-        //public Dictionary<string, double> Means { get; set; }
         public List<KeyValue> Means { get; set; }
 
 

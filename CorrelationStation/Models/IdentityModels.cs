@@ -14,7 +14,6 @@ namespace CorrelationStation.Models
         public ICollection<StatSummaryVM> StatSummaries { get; set; }
         public ICollection<int> StatSummaryIds { get; set; }
 
-
         public ApplicationUser()
         {
             StatSummaries = new List<StatSummaryVM>();

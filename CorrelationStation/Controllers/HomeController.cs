@@ -3,22 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Meta.Numerics.Statistics;
-using CsvHelper;
 using Microsoft.AspNet.Identity;
+using CorrelationStation.Services;
 
 namespace CorrelationStation.Controllers
 {
     public class HomeController : Controller
     {
+        ParsingService _parsingService;
+        ConfigurationService _configurationService;
+        SummaryService _summaryService;
+        DeleteRecordService _deleteRecordService;
 
+        public HomeController()
+        {
+            _parsingService = new ParsingService();
+            _configurationService = new ConfigurationService();
+            _summaryService = new SummaryService();
+            _deleteRecordService = new DeleteRecordService();
+        }
 
         public ActionResult Report(List<ChiStats> chis)
         {
-           
-
             return View(chis);
         }
 
@@ -35,8 +42,6 @@ namespace CorrelationStation.Controllers
             {
                 ViewData = (ViewDataDictionary)TempData["ViewData"];
             }
-            //if (TempData["ModelState"] != null)
-            //    TempData["ModelState"] = ModelState;
 
             UploadVM file = new UploadVM();
 
@@ -46,8 +51,6 @@ namespace CorrelationStation.Controllers
         [HttpPost]
         public ActionResult ChooseAnalysis(UploadVM vm)
         {
-
-
             return View();
         }
 
@@ -55,6 +58,13 @@ namespace CorrelationStation.Controllers
         [HttpPost]
         public ActionResult SelectTypes(UploadVM vm)
         {
+            if (vm.File == null)
+            {
+                ModelState.AddModelError(string.Empty, "Please select a file first");
+                TempData["ViewData"] = ViewData;
+                TempData["ModelState"] = ModelState;
+                return RedirectToAction("Upload");
+            }
 
             if (TempData["ViewData"] != null)
             {
@@ -68,32 +78,29 @@ namespace CorrelationStation.Controllers
                 TempData["ModelState"] = ModelState;
                 return RedirectToAction("Upload");
             }
-                    
-           
+
 
             if (vm.File.ContentLength > 0 && ModelState.IsValid)
             {
                 var guid = Guid.NewGuid();
                 var path = Path.Combine(Server.MapPath("~/Content/Files"), guid.ToString());
-                SelectTypeVM selectTypeVM = Methods.MakeSelectType(vm, path);
+                SelectTypeVM selectTypeVM = _configurationService.MakeSelectType(vm, path);
                 selectTypeVM.FileName = vm.File.FileName;
                 return View(selectTypeVM);
-
             }
             else
             {
                 return RedirectToAction("Upload");
             }
 
+        }
 
-}
 
-        
         public ActionResult ProcessCSV(SelectTypeVM vm)
         {
-            Methods.MakeDropDownAndFirstFive(vm);
+            _configurationService.MakeDropDownAndFirstFive(vm);
 
-            if (vm.ColumnTypes.Values.Where(x => x != "").Count() < 2 )
+            if (vm.ColumnTypes.Values.Where(x => x != "").Count() < 2)
             {
                 ModelState.AddModelError(string.Empty, "*You must select at least two variables");
                 TempData["ViewData"] = ViewData;
@@ -102,32 +109,26 @@ namespace CorrelationStation.Controllers
                 return View("SelectTypes", vm);
             }
 
-            Dictionary<string, List<string>> invalidColumns = Methods.CheckForInvalidColumns(vm.ColumnTypes, vm.FirstFiveRows);
+            Dictionary<string, List<string>> invalidColumns = _parsingService.CheckForInvalidColumns(vm.ColumnTypes, vm.FirstFiveRows);
 
             if (invalidColumns.Count > 0)
             {
-                //string errorMessage = Methods.GetExceptionMessage(invalidColumns);
-                //ViewBag.Error = Methods.GetExceptionMessage(invalidColumns);
                 ViewBag.Error = "<p class='viewbag-error'>*Invalid data found* <br/>Did you mark a categorical variabal as numeral? </p>";
-                //ModelState.AddModelError(string.Empty, errorMessage);
                 TempData["ViewData"] = ViewData;
                 TempData["ModelState"] = ModelState;
                 ViewData = (ViewDataDictionary)TempData["ViewData"];
                 return View("SelectTypes", vm);
             }
-            //check variable types
 
 
+            Dictionary<string, List<string>> dictFile = _parsingService.CsvToDictionary(vm.Path);
 
-
-            Dictionary<string, List<string>> dictFile = Methods.CsvToDictionary(vm.Path);
-
-            StatSummaryVM summaryVM = Methods.GetSummaryVM(dictFile, vm);
+            StatSummaryVM summaryVM = _summaryService.GetSummaryVM(dictFile, vm);
             summaryVM.CreatedOn = DateTime.Now;
 
             string userId = User.Identity.GetUserId();
 
-            Methods.SaveStatSummary(summaryVM, userId);
+            _summaryService.SaveStatSummary(summaryVM, userId);
 
             ViewBag.Saved = "true";
 
@@ -141,7 +142,7 @@ namespace CorrelationStation.Controllers
             bool reportSaved;
             if (userId != null)
             {
-                reportSaved = Methods.CheckIfReportSaved(userId, id);
+                reportSaved = _summaryService.CheckIfReportSaved(userId, id);
                 if (reportSaved)
                     ViewBag.Saved = "true";
                 else
@@ -153,7 +154,7 @@ namespace CorrelationStation.Controllers
             }
 
 
-            StatSummaryVM ss =  Methods.GetSummaryById(id);
+            StatSummaryVM ss = _summaryService.GetSummaryById(id);
             return View("Report", ss);
         }
 
@@ -162,7 +163,7 @@ namespace CorrelationStation.Controllers
         {
             string userId = User.Identity.GetUserId();
 
-            List<StatSummaryVM> summaries = Methods.GetUserSummaries(userId);
+            List<StatSummaryVM> summaries = _summaryService.GetUserSummaries(userId);
 
             return View("AllStatSummaries", summaries);
         }
@@ -170,7 +171,7 @@ namespace CorrelationStation.Controllers
         public ActionResult AllStatSummaries()
         {
 
-            List<StatSummaryVM> summaries = Methods.GetAllSummaries();
+            List<StatSummaryVM> summaries = _summaryService.GetAllSummaries();
 
             return View(summaries);
         }
@@ -189,16 +190,8 @@ namespace CorrelationStation.Controllers
                 return RedirectToAction("Index");
             }
 
-            Methods methods = new Methods();
-            methods.DeleteRecords();
+            _deleteRecordService.DeleteRecords();
             return RedirectToAction("Index");
         }
-        //public ActionResult SaveSummary(StatSummaryVM ss)
-        //{
-        //    Methods.SaveStatSummary(ss);
-
-        //    return RedirectToAction("StatSummaries");
-        //}
-
     }
 }

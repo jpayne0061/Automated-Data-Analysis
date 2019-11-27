@@ -10,7 +10,6 @@ namespace CorrelationStation.Models
         public int Id { get; set; }
         public string DateData { get; set; }
         public string NumeralData { get; set; }
-
         public string DateName { get; set; }
         public string NumeralName { get; set; }
 

@@ -94,10 +94,6 @@ namespace CorrelationStation.Models
                 return (difference * ratio) + pValue;
             }
 
-
-
-
-
             return IndexPvalue[pValueIndex];
 
         }

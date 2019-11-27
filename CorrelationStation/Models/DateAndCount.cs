@@ -12,7 +12,6 @@ namespace CorrelationStation.Models
         public DateTime DateTime { get; set; }
         public string MonthAndYear { get; set; }
         public int Count { get; set; }
-
         public LinePlotCategory linePlotCategory { get; set; }
 
 

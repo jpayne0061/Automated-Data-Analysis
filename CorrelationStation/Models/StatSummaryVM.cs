@@ -17,8 +17,6 @@ namespace CorrelationStation.Models
         public string Path { get; set; }
         public string FileName { get; set; }
         public DateTime CreatedOn { get; set; }
-        //public ApplicationUser CreatedBy { get; set; }
-        //public bool Public { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
         public string Name { get; set; }

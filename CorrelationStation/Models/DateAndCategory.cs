@@ -8,8 +8,6 @@ namespace CorrelationStation.Models
     public class DateAndCategory
     {
         public int Id { get; set; }
-
-        //public ICollection<TimePeriod> TimePeriods { get; set; }
         public ICollection<LinePlotCategory> LinePlotCategories { get; set; }
 
         public string Variable1 { get; set; }
@@ -122,59 +120,7 @@ namespace CorrelationStation.Models
                 LinePlotCategories.Add(linePlotCategory);
             }
 
-
-
         }
-
-        //public void GetTimePeriods(List<string> times, List<string> categories )
-        //{
-        //    //List<TimePeriod> timePeriods = new List<TimePeriod>();
-
-
-        //    //for(var i = 0; i < times.Count; i++)
-        //    //{
-
-        //    //}
-
-        //    Dictionary<string, Dictionary<string, int>> timeAndCategories = new Dictionary<string, Dictionary<string, int>>();
-
-        //    for(var i = 0; i < times.Count; i++ )
-        //    {
-        //        string formattedDate = DateTime.Parse(times[i]).ToString("y");
-
-        //        if (timeAndCategories.ContainsKey(formattedDate))
-        //        {
-        //            //timeAndCategories[formattedDate]
-        //            if(timeAndCategories[formattedDate].ContainsKey(categories[i]))
-        //            {
-        //                timeAndCategories[formattedDate][categories[i]] += 1;
-        //            }
-        //            else
-        //            {
-        //                timeAndCategories[formattedDate].Add(categories[i], 1);
-        //            }
-
-        //        }
-        //        else
-        //        {
-        //            timeAndCategories[formattedDate] = new Dictionary<string, int>();
-        //            timeAndCategories[formattedDate].Add(categories[i], 1);
-        //        }
-        //    }
-
-        //    foreach(KeyValuePair<string, Dictionary<string, int>> kvp in timeAndCategories)
-        //    {
-        //        List<CategoryCount> categoryCounts = new List<CategoryCount>();
-
-        //        foreach(KeyValuePair<string, int> kvp2 in kvp.Value)
-        //        {
-        //            categoryCounts.Add(new CategoryCount { Name = kvp2.Key, Count = kvp2.Value});
-        //        }
-
-        //        TimePeriods.Add(new TimePeriod { DateString = kvp.Key, Date = DateTime.Parse(kvp.Key), CategoryCounts = categoryCounts });
-        //    }
-
-        //}
 
     }
 }

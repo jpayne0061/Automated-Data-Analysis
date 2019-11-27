@@ -17,6 +17,5 @@ namespace CorrelationStation.Models
             DateAndCounts = new List<DateAndCount>();
         }
 
-
     }
 }

@@ -7,33 +7,15 @@ namespace CorrelationStation.Models
 {
     public class ChiStats
     {
-        //private ApplicationDbContext _context;
-
-        //public ChiStats()
-        //{
-        //    _context = new ApplicationDbContext();
-        //}
-
         public int Id { get; set; }
-
-        //public Dictionary<string, double> ExpectedValues { get; set; }
-        //public Dictionary<string, int> ObservedValues { get; set; }
-
         public List<KeyValue> ExpectedValues { get; set; }
         public List<KeyValue> ObservedValues { get; set; }
 
         public string Variable1 { get; set; }
         public string Variable2 { get; set; }
 
-        //public Dictionary<string, double> VariableCategories { get; set; }
-        //public Dictionary<string, int> Variable2Categories { get; set; }
-
         public List<KeyValue> VariableCategories { get; set; }
         public List<KeyValue> Variable2Categories { get; set; }
-
-
-        //public Dictionary<string, double> ExpectedPercentage { get; set; }
-        //public Dictionary<string, double> ObservedPercentage { get; set; }
 
         public List<KeyValue> ExpectedPercentage { get; set; }
         public List<KeyValue> ObservedPercentage { get; set; }
@@ -140,9 +122,6 @@ namespace CorrelationStation.Models
             //build dictionary/table of possible combinations of categories and count for each
             //Dictionary<string, int> observedCounts = new Dictionary<string, int>();
 
-
-
-
             for (var i = 0; i < values.Count; i++)
             {
                 if (values[i] == "" || values2[i] == "" || values[i] == null || values2[i] == null)
@@ -158,7 +137,6 @@ namespace CorrelationStation.Models
                 {
                     observedCounts[values[i] + " " + values2[i]] += 1;
                 }
-                //}
             }
 
 
@@ -186,13 +164,6 @@ namespace CorrelationStation.Models
                 chiStat += kvp.Value;
             }
 
-            //ChiStatTable chiTable = new ChiStatTable();
-            //ChiSquareUtils chiTool = new 
-            //ObservedValues = new List<KeyValue>();
-            //foreach (KeyValuePair<string, int> kvp in observedCounts)
-            //{
-            //    ObservedValues.Add(new KeyValue { Key = kvp.Key, Value = kvp.Value});
-            //}
             ObservedValues = new List<KeyValue>();
             ExpectedValues = new List<KeyValue>();
             foreach (KeyValuePair<string, double> kvp in expectedValues)
@@ -221,36 +192,12 @@ namespace CorrelationStation.Models
                 ObservedPercentage.Add(new KeyValue { Key = kvp.Key, Value = observedPercentages[kvp.Key] });
             }
 
-            //ObservedPercentage = new List<KeyValue>();
-            //foreach (KeyValuePair<string, double> kvp in observedPercentages)
-            //{
-            //    ObservedPercentage.Add(new KeyValue { Key = kvp.Key, Value = kvp.Value });
-            //}
-
-
-
-            //ObservedValues = observedCounts;
-            //ExpectedValues = expectedValues;
-
-            //VariableCategories = valuesCategories;
-            //Variable2Categories = values2Categories;
-
-            //ExpectedPercentage = expectedPercentages;
-            //ObservedPercentage = observedPercentages;
-
-            //PValue = chiTable.getChiPValue(degreesFreedom, chiStat);
             PValue = ChiSquareUtils.pochisq(chiStat, degreesFreedom);
             ChiStatistic = Math.Round(chiStat, 2);
             HighDF = false;
             SignificantResult = PValue < 0.05;
 
         }
-
-        //public void SaveStat()
-        //{
-        //    _context.ChiStats.Add(this);
-        //    _context.SaveChanges();
-        //}
 
     }
 

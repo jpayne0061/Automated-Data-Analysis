@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace CorrelationStation.Models
 {
@@ -53,19 +52,9 @@ namespace CorrelationStation.Models
 
             r = result;
             SignificantResult = r > 0.35;
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            // the code that you want to measure comes here
-
-
-
-            //Variable1Data = values1.Select(v => new AnInt { Number = v}).ToList();
-            //Variable2Data = values2.Select(v => new AnInt { Number = v }).ToList();
 
             Variable1Data = String.Join(",", values1);
             Variable2Data = String.Join(",", values2);
-
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
         }
 
     }

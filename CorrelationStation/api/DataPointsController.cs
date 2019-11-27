@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using CorrelationStation.Models;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity;
-using System.Web.Helpers;
-using System.Data.Entity;
+using CorrelationStation.Services;
 
 namespace CorrelationStation.Controllers
 {
     public class DataPointsController : ApiController
     {
         private ApplicationDbContext _context;
+        private ParsingService _parsingService;
+        private ScatterPlotService _scatterPlotService;
+        private SummaryService _summaryService;
 
         public DataPointsController()
         {
             _context = new ApplicationDbContext();
+            _parsingService = new ParsingService();
+            _scatterPlotService = new ScatterPlotService();
+            _summaryService = new SummaryService();
         }
 
 
@@ -32,11 +35,11 @@ namespace CorrelationStation.Controllers
 
             if (scatterPlotRequest.Switch == "false")
             {
-                dataPairs = Methods.ProcessScatterPlotRequest(pearsonCorr.Variable1Data, pearsonCorr.Variable2Data);
+                dataPairs = _scatterPlotService.ProcessScatterPlotRequest(pearsonCorr.Variable1Data, pearsonCorr.Variable2Data);
             }
             else
             {
-                dataPairs = Methods.ProcessScatterPlotRequest(pearsonCorr.Variable2Data, pearsonCorr.Variable1Data);
+                dataPairs = _scatterPlotService.ProcessScatterPlotRequest(pearsonCorr.Variable2Data, pearsonCorr.Variable1Data);
             }
 
             return dataPairs;
@@ -50,7 +53,7 @@ namespace CorrelationStation.Controllers
             List<string> dates = dn.DateData.Split(',').ToList();
             List<string> nums = dn.NumeralData.Split(',').ToList();
 
-            List<DateAndNumeralValues> dns = Methods.ProcessDateNumerals(dates, nums).OrderBy(x => x.Date).ToList();
+            List<DateAndNumeralValues> dns = _parsingService.ProcessDateNumerals(dates, nums).OrderBy(x => x.Date).ToList();
 
             return dns;
         }
@@ -94,8 +97,6 @@ namespace CorrelationStation.Controllers
 
         public List<List<KeyValue>> GetChiPercentages(int id)
         {
-
-            //THIS IS BROKEN-----OBSERVEDPER
             var percentages = new List<List<KeyValue>>();
 
             var chiStat = _context.ChiStats.Include(c => c.ObservedPercentage)
@@ -110,9 +111,6 @@ namespace CorrelationStation.Controllers
             }
 
             List<List<KeyValue>> percentagesDescending = percentages.OrderByDescending(ls => (Math.Abs(ls[0].Value - ls[1].Value))).ToList();
-
-            //percentages.Add(chiStat.ObservedPercentage);
-            //percentages.Add(chiStat.ExpectedPercentage);
 
             return percentagesDescending;
         }
@@ -130,16 +128,11 @@ namespace CorrelationStation.Controllers
         [HttpGet]
         public ICollection<LinePlotCategory> GetDateCategoryLinePlot(int id)
         {
-            //var dateCat = _context.DateAndCategories.Include(d => d.TimePeriods.Select(t => t.CategoryCounts))
-            //                                    .SingleOrDefault(a => a.Id == id);
-
             var dateCat = _context.DateAndCategories.Include(d => d.LinePlotCategories.Select(t => t.DateAndCounts))
                                                 .SingleOrDefault(a => a.Id == id);
 
-            //dateCat.TimePeriods.ToList().Sort((x, y) => DateTime.Compare(x.Date, y.Date));
             foreach(LinePlotCategory lineCat in dateCat.LinePlotCategories)
             {
-                //lineCat.DateAndCounts.ToList().Sort((x, y) => DateTime.Compare(x.DateTime, y.DateTime));
                 lineCat.DateAndCounts = lineCat.DateAndCounts.OrderBy(x => x.DateTime).ToList();
             }
             return dateCat.LinePlotCategories;
@@ -154,9 +147,8 @@ namespace CorrelationStation.Controllers
 
             ApplicationUser user = _context.Users.Include(u => u.StatSummaries).SingleOrDefault(u => u.Id == userId);
             StatSummaryVM statSummary = _context.StatSummaryVMs.SingleOrDefault(ss => ss.Id == id);
-            //statSummary.ApplicationUser = user;
 
-            if(!Methods.CheckIfReportSaved(userId, statSummary.Id))
+            if(!_summaryService.CheckIfReportSaved(userId, statSummary.Id))
             {
                 statSummary.ApplicationUsers.Add(user);
                 user.StatSummaries.Add(statSummary);
@@ -165,76 +157,6 @@ namespace CorrelationStation.Controllers
 
             return Ok();
         }
-
-        //[HttpGet]
-        //public IHttpActionResult RemoveStatSummary(int id)
-        //{
-        //    StatSummaryVM ss = _context.StatSummaryVMs.Include(x => x.AnovaStats.Select(a => a.Means))
-        //                                              .Include(x => x.ChiStats.Select(c => c.ExpectedPercentage))
-        //                                              .Include(x => x.ChiStats.Select(c => c.ExpectedValues))
-        //                                              .Include(x => x.ChiStats.Select(c => c.ObservedPercentage))
-        //                                              .Include(x => x.ChiStats.Select(c => c.ObservedValues))
-        //                                                .Include(x => x.PearsonCorrs)
-        //                                                .Include(x => x.DateAndCatories.Select(dc => dc.LinePlotCategories.Select(lp => lp.DateAndCounts)))
-        //                                                .Include(x => x.DateAndNumerals)
-        //                                                .SingleOrDefault(x => x.Id == id);
-
-
-        //    //foreach(var anova in ss.AnovaStats)
-        //    //{
-        //    //    _context.AnovaStats.
-        //    //}
-
-        //    //deleteMe.Prices.ToList().ForEach(p => db.ItemPrices.Remove(p));
-        //    //var itemsToDelete = _context.Set<KeyValue>().Where(kv => kv.);
-        //    List <AnovaStats> anovas = ss.AnovaStats.ToList();
-        //    List<ChiStats> chis = ss.ChiStats.ToList();
-        //    List<PearsonCorr> pcs = ss.PearsonCorrs.ToList();
-        //    List<DateAndNumeral> dns = ss.DateAndNumerals.ToList();
-        //    List<DateAndCategory> dcs = ss.DateAndCatories.ToList();
-
-        //    foreach (AnovaStats anova in anovas)
-        //    {
-
-        //       _context.KeyValues.RemoveRange(anova.Means);
-                
-        //    }
-        //    ss.AnovaStats.ToList().ForEach(a => _context.AnovaStats.Remove(a));
-
-        //    foreach (ChiStats chi in chis)
-        //    {
-
-        //        _context.KeyValues.RemoveRange(chi.ExpectedPercentage);
-        //        _context.KeyValues.RemoveRange(chi.ExpectedValues);
-        //        _context.KeyValues.RemoveRange(chi.ObservedPercentage);
-        //        _context.KeyValues.RemoveRange(chi.ObservedValues);
-
-        //    }
-            
-        //    foreach(DateAndCategory dc in dcs)
-        //    {
-        //        foreach(LinePlotCategory lpc in dc.LinePlotCategories)
-        //        {
-        //            _context.DateAndCounts.RemoveRange(lpc.DateAndCounts);
-        //        }
-        //        _context.LinePlotCategories.RemoveRange(dc.LinePlotCategories);
-        //    }
-
-        //    ss.DateAndCatories.ToList().ForEach(dc => _context.DateAndCategories.Remove(dc));
-
-        //    ss.DateAndNumerals.ToList().ForEach(dn => _context.DateAndNumerals.Remove(dn));
-
-        //    ss.ChiStats.ToList().ForEach(c => _context.ChiStats.Remove(c));
-
-        //    ss.PearsonCorrs.ToList().ForEach(p => _context.PearsonCorrs.Remove(p));
-
-
-        //    _context.Entry(ss).State = EntityState.Deleted;
-
-        //    //_context.StatSummaryVMs.Remove(ss);
-        //    _context.SaveChanges();
-        //    return Ok();
-        //}
 
     }
 }
