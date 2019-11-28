@@ -6,7 +6,7 @@ The project was built using code first migrations, so just clone the repository 
 
 ## Gotchas
 
-# Could not find a part of the path … bin\roslyn\csc.exe
+### Could not find a part of the path … bin\roslyn\csc.exe
 
 Run the following command in the package manager console:
 
